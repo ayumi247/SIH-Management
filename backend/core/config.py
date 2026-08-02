@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     
     # CORS
-    FRONTEND_URL: str = "http://localhost:5500"
+    FRONTEND_URL: str
     
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 

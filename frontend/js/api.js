@@ -1,5 +1,8 @@
-const API_URL = 'http://localhost:8000/api/v1';
-
+// Automatically detect if we are running locally or on Vercel
+const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+const API_URL = isLocalhost 
+    ? 'http://localhost:8000/api/v1' 
+    : 'https://sih-management.onrender.com/api/v1'; // <-- Just replace this ONE string before committing!
 async function fetchAPI(endpoint, options = {}) {
     const defaultOptions = {
         headers: {
