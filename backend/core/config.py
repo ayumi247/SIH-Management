@@ -12,6 +12,9 @@ class Settings(BaseSettings):
     # Database
     DATABASE_URL: str
     
+    # CORS
+    FRONTEND_URL: str = "http://localhost:5500"
+    
     model_config = SettingsConfigDict(env_file=".env", case_sensitive=True)
 
 settings = Settings()
