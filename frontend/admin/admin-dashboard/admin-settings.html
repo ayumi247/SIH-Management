@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Settings</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="max-width: 600px;">
+    <h3 style="color: var(--neon-purple); margin-bottom: 1rem;">Admin Profile Details</h3>
+    <div id="profile-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; color: var(--text-secondary);">
+        <!-- Injected details -->
+    </div>
+</div>
+<script>
+    async function initPage(user) {
+        const details = [
+            ['Name', user.name],
+            ['Email', user.email],
+            ['Phone', user.phone],
+            ['Position/Designation', user.position],
+            ['College ID', user.college_id]
+        ];
+        
+        const html = details.map(([label, val]) => `
+            <div>
+                <strong style="color: var(--text-primary);">${label}</strong><br>
+                ${val || 'N/A'}
+            </div>
+        `).join('');
+        
+        document.getElementById('profile-details').innerHTML = html;
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('Admin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

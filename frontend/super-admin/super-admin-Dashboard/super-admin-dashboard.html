@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global System Overview | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Global System Overview</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem; border-color: rgba(255, 0, 127, 0.3);">
+    <h3 style="color: var(--neon-pink);">Welcome to Central Command</h3>
+    <p style="color: var(--text-secondary);">Global oversight of all Colleges and Admins.</p>
+</div>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+    <div class="glass-card">
+        <h4 style="color: var(--neon-cyan);">Registered Colleges</h4>
+        <p id="total-colleges" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0</p>
+    </div>
+    <div class="glass-card">
+        <h4 style="color: var(--neon-pink);">Pending Admin Requests</h4>
+        <p id="pending-admins" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0</p>
+    </div>
+</div>
+<script>
+    async function initPage(user) {
+        try {
+            const colleges = await fetchAPI('/superadmin/colleges');
+            const pending = await fetchAPI('/superadmin/admins/pending');
+            
+            document.getElementById('total-colleges').innerText = colleges.length;
+            document.getElementById('pending-admins').innerText = pending.length;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('SuperAdmin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/super-admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/super-admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

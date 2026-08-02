@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Teams | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Manage Teams</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+    <p style="color: var(--text-secondary);">Manage, review, and shortlist teams from your college.</p>
+</div>
+<div id="teams-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Teams injected here -->
+</div>
+<script>
+    async function initPage(user) {
+        try {
+            const teams = await fetchAPI('/admin/teams');
+            
+            if (teams.length === 0) {
+                document.getElementById('teams-list').innerHTML = '<p>No teams formed yet.</p>';
+                return;
+            }
+            
+            const html = teams.map(t => {
+                const females = t.members.filter(m => m.gender === 'Female').length;
+                const canShortlist = (t.members.length === 6 && females > 0);
+                
+                return `
+                <div class="glass-card">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                        <div>
+                            <h3 style="color: var(--neon-purple);">${t.name}</h3>
+                            <p style="color: var(--text-secondary); font-size: 0.95rem;">${t.problem_statement}</p>
+                            <p style="margin-top: 0.5rem;">Status: <strong style="color: var(--text-primary);">${t.status}</strong></p>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                            <button class="btn btn-secondary" style="border-color: var(--neon-cyan); color: var(--neon-cyan); padding: 0.5rem 1rem;" onclick="updateStatus('${t.id}', 'Shortlisted')" ${!canShortlist ? 'disabled style="opacity: 0.5; cursor: not-allowed;" title="Requires 6 members and at least 1 female"' : ''}>Shortlist</button>
+                            <button class="btn btn-secondary" style="border-color: var(--neon-pink); color: var(--neon-pink); padding: 0.5rem 1rem;" onclick="updateStatus('${t.id}', 'Waitlisted')" ${!canShortlist ? 'disabled style="opacity: 0.5; cursor: not-allowed;" title="Requires 6 members and at least 1 female"' : ''}>Waitlist</button>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem;" onclick="updateStatus('${t.id}', 'Pending')">Reset</button>
+                        </div>
+                    </div>
+                    
+                    <h5 style="margin-bottom: 0.5rem;">Members (${t.members.length}/6) - Females: ${females}</h5>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0.25rem;">
+                        ${t.members.map(m => `<li>${m.name} (${m.gender}) - ${m.branch}</li>`).join('')}
+                    </ul>
+                    ${!canShortlist ? '<p style="color: var(--neon-pink); font-size: 0.85rem; margin-top: 1rem;">⚠ Cannot be shortlisted: Must have exactly 6 members including at least 1 female.</p>' : ''}
+                </div>
+            `}).join('');
+            
+            document.getElementById('teams-list').innerHTML = html;
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    async function updateStatus(team_id, status) {
+        try {
+            await fetchAPI(`/admin/teams/${team_id}/status`, {
+                method: 'PUT',
+                body: JSON.stringify({ status })
+            });
+            window.location.reload();
+        } catch(error) {
+            alert('Error: ' + error.message);
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('Admin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

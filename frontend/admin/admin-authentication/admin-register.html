@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <style>
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { width: 100%; max-width: 600px; border-color: rgba(176, 38, 255, 0.3); }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        
+        .btn-admin {
+            background: linear-gradient(45deg, var(--neon-purple), #ff007f);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow-purple);
+        }
+        .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(176, 38, 255, 0.6); }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card animate-fade-in">
+            <h2 class="text-center mb-2" style="color: var(--neon-purple);">Apply for College Admin</h2>
+            <form id="registerForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Employee/Enrollment No.</label>
+                        <input type="text" id="enrollment_no" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Position/Designation</label>
+                        <input type="text" id="position" class="form-control" required placeholder="e.g. Professor">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year</label>
+                        <input type="text" id="year" class="form-control" value="N/A" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Branch/Department</label>
+                        <input type="text" id="branch" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div class="grid mt-1">
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="gender" class="form-control" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">College Name</label>
+                        <input type="text" id="college_name" class="form-control" required placeholder="e.g. Delhi Technological University">
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-admin mt-1" style="width: 100%;">Submit Application</button>
+            </form>
+            <p class="text-center mt-1" style="color: var(--text-secondary); font-size: 0.9rem;">
+                Already verified? <a href="admin-login.html" style="color: var(--neon-purple);">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                phone: document.getElementById('phone').value,
+                enrollment_no: document.getElementById('enrollment_no').value,
+                year: document.getElementById('year').value,
+                branch: document.getElementById('branch').value,
+                gender: document.getElementById('gender').value,
+                position: document.getElementById('position').value,
+                college_name: document.getElementById('college_name').value
+            };
+            
+            try {
+                await fetchAPI('/auth/register/admin', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                alert('Application submitted successfully! Please wait up to 24 hours for Super-Admin verification.');
+                window.location.href = 'admin-login.html';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

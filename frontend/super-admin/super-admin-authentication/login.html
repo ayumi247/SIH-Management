@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Login | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <style>
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { width: 100%; max-width: 400px; border-color: rgba(255, 0, 127, 0.3); }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        
+        .btn-super {
+            background: linear-gradient(45deg, var(--neon-pink), #ff5e00);
+            color: var(--text-primary);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.3);
+        }
+        .btn-super:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card animate-fade-in">
+            <h2 class="text-center mb-2" style="color: var(--neon-pink);">Super Admin Access</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" required placeholder="Super Admin email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-super mt-1" style="width: 100%;">Access Secure Portal</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetchAPI('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (res.role === 'SuperAdmin') {
+                    window.location.href = '../super-admin-Dashboard/super-admin-dashboard.html';
+                } else {
+                    alert('Invalid credentials for Super-Admin access.');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile Details | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>My Profile Details</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="max-width: 600px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h3 style="color: var(--neon-cyan); margin: 0;">Profile Information</h3>
+        <button class="btn btn-primary btn-sm" onclick="openEditModal()">Edit Links & Skills</button>
+    </div>
+    <div id="profile-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; color: var(--text-secondary);">
+        <!-- Injected details -->
+    </div>
+</div>
+
+<!-- Edit Modal -->
+<div id="editModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center;">
+    <div class="glass-card" style="width: 100%; max-width: 500px;">
+        <h3 style="margin-bottom: 1rem; color: var(--neon-cyan);">Edit Profile Links</h3>
+        <form id="editForm">
+            <div class="form-group">
+                <label class="form-label">Skills</label>
+                <input type="text" id="edit_skills" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">GitHub URL</label>
+                <input type="url" id="edit_github" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label">LinkedIn URL</label>
+                <input type="url" id="edit_linkedin" class="form-control">
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary" style="flex:1;">Save</button>
+                <button type="button" class="btn" style="flex:1; background: transparent; border: 1px solid var(--border-light); color: var(--text-primary);" onclick="closeEditModal()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    let currentUser = null;
+
+    async function initPage(user) {
+        currentUser = user;
+        const formatLink = (url) => url ? `<a href="${url}" target="_blank" style="color: var(--neon-cyan);">${url}</a>` : 'Not specified';
+        
+        const details = [
+            ['Name', user.name],
+            ['Email', user.email],
+            ['Phone', user.phone],
+            ['Enrollment No.', user.enrollment_no],
+            ['Year', user.year],
+            ['Branch', user.branch],
+            ['Gender', user.gender],
+            ['Skills', user.skills || 'Not specified'],
+            ['GitHub', formatLink(user.github_url)],
+            ['LinkedIn', formatLink(user.linkedin_url)],
+            ['College ID', user.college_id]
+        ];
+        
+        const html = details.map(([label, val]) => `
+            <div>
+                <strong style="color: var(--text-primary);">${label}</strong><br>
+                ${val || 'N/A'}
+            </div>
+        `).join('');
+        
+        document.getElementById('profile-details').innerHTML = html;
+    }
+
+    function openEditModal() {
+        if (!currentUser) return;
+        document.getElementById('edit_skills').value = currentUser.skills || '';
+        document.getElementById('edit_github').value = currentUser.github_url || '';
+        document.getElementById('edit_linkedin').value = currentUser.linkedin_url || '';
+        document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+            skills: document.getElementById('edit_skills').value || null,
+            github_url: document.getElementById('edit_github').value || null,
+            linkedin_url: document.getElementById('edit_linkedin').value || null
+        };
+        
+        try {
+            const updatedUser = await fetchAPI('/users/me', {
+                method: 'PATCH',
+                body: JSON.stringify(payload)
+            });
+            initPage(updatedUser);
+            closeEditModal();
+        } catch (error) {
+            alert(error.message);
+        }
+    });
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('User');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/user-sidebar.html');
+                await loadComponent('navbar-container', '../components/user-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

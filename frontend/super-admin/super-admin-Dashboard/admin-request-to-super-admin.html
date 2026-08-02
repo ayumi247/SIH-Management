@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Admins Queue | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Pending Admins Queue</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+    <p style="color: var(--text-secondary);">Review and approve College Admin applications. Approving an admin will also activate their associated college in the system.</p>
+</div>
+<div id="requests-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+    <!-- Requests injected here -->
+</div>
+<script>
+    async function initPage(user) {
+        try {
+            const requests = await fetchAPI('/superadmin/admins/pending');
+            
+            if (requests.length === 0) {
+                document.getElementById('requests-list').innerHTML = '<p>No pending admin requests.</p>';
+                return;
+            }
+            
+            // We also need college names for context, let's fetch all colleges
+            const colleges = await fetchAPI('/superadmin/colleges');
+            const colMap = {};
+            colleges.forEach(c => colMap[c.id] = c.name);
+            
+            const html = requests.map(r => `
+                <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: var(--neon-pink);">${r.name}</h4>
+                        <p style="color: var(--text-secondary); margin: 0.5rem 0;">Email: ${r.email} <br> College: <strong style="color: var(--text-primary);">${colMap[r.college_id] || 'Unknown'}</strong></p>
+                        <p style="font-size: 0.9rem;">Designation: ${r.position || 'N/A'}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" style="background: linear-gradient(45deg, var(--neon-pink), #ff5e00);" onclick="approveAdmin('${r.id}')">Approve Admin & Activate College</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            document.getElementById('requests-list').innerHTML = html;
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    async function approveAdmin(admin_id) {
+        try {
+            await fetchAPI(`/superadmin/admins/${admin_id}/approve`, { method: 'PUT' });
+            alert('Admin approved successfully!');
+            window.location.reload();
+        } catch(error) {
+            alert('Error: ' + error.message);
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('SuperAdmin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/super-admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/super-admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

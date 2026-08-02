@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Colleges | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Active Colleges</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+    <p style="color: var(--text-secondary);">All registered colleges. Click "View Teams" to manage their teams like a local admin.</p>
+</div>
+<div id="colleges-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <!-- Colleges injected here -->
+</div>
+
+<!-- Modal for viewing teams -->
+<div id="teams-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); z-index: 1000; padding: 2rem; overflow-y: auto;">
+    <div class="glass-card" style="max-width: 800px; margin: 0 auto; position: relative;">
+        <button onclick="document.getElementById('teams-modal').style.display='none'" class="btn btn-secondary" style="position: absolute; top: 1rem; right: 1rem;">Close</button>
+        <h3 id="modal-college-name" style="color: var(--neon-pink); margin-bottom: 1.5rem;">College Teams</h3>
+        <div id="modal-teams-list" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+    </div>
+</div>
+
+<script>
+    async function initPage(user) {
+        try {
+            const colleges = await fetchAPI('/superadmin/colleges');
+            
+            const html = colleges.map(c => `
+                <div class="glass-card">
+                    <h4>${c.name}</h4>
+                    <p style="margin: 0.5rem 0; color: var(--text-secondary);">Status: ${c.is_active ? '<span style="color:var(--neon-cyan)">Active</span>' : '<span style="color:var(--neon-pink)">Pending</span>'}</p>
+                    <p style="font-size: 0.8rem; color: #666; margin-bottom: 1rem;">ID: ${c.id}</p>
+                    <button class="btn btn-secondary" style="width: 100%; border-color: var(--neon-pink); color: var(--text-primary);" onclick="viewCollegeTeams('${c.id}', '${c.name.replace(/'/g, "\\'")}')">View Teams</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('colleges-list').innerHTML = html;
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    async function viewCollegeTeams(college_id, college_name) {
+        document.getElementById('modal-college-name').innerText = college_name + ' Teams';
+        const listEl = document.getElementById('modal-teams-list');
+        listEl.innerHTML = '<p>Loading teams...</p>';
+        document.getElementById('teams-modal').style.display = 'block';
+        
+        try {
+            const teams = await fetchAPI(`/superadmin/colleges/${college_id}/teams`);
+            if (teams.length === 0) {
+                listEl.innerHTML = '<p>No teams formed yet in this college.</p>';
+                return;
+            }
+            
+            const html = teams.map(t => {
+                const females = t.members.filter(m => m.gender === 'Female').length;
+                return `
+                <div style="padding: 1rem; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <strong style="color: var(--neon-cyan);">${t.name}</strong>
+                        <span style="font-size: 0.85rem; padding: 2px 8px; background: rgba(255,255,255,0.1); border-radius: 12px;">${t.status}</span>
+                    </div>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">${t.problem_statement}</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Members: ${t.members.length}/6 (Females: ${females})</p>
+                </div>
+            `}).join('');
+            
+            listEl.innerHTML = html;
+        } catch (e) {
+            listEl.innerHTML = `<p style="color: var(--neon-pink);">Error: ${e.message}</p>`;
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('SuperAdmin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/super-admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/super-admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Dashboard | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>College Dashboard</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem; border-color: rgba(176, 38, 255, 0.3);">
+    <h3 id="welcome-msg" style="color: var(--neon-purple);">Welcome, College Admin</h3>
+    <p style="color: var(--text-secondary);">Here is a quick overview of your college's SIH teams.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+    <div class="glass-card">
+        <h4 style="color: var(--neon-cyan);">Total Teams</h4>
+        <p id="total-teams" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0</p>
+    </div>
+    <div class="glass-card">
+        <h4 style="color: var(--neon-purple);">Shortlisted</h4>
+        <p id="shortlisted-teams" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0 <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 45</span></p>
+    </div>
+    <div class="glass-card">
+        <h4 style="color: var(--neon-pink);">Waitlisted</h4>
+        <p id="waitlisted-teams" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0 <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 5</span></p>
+    </div>
+</div>
+<script>
+    async function initPage(user) {
+        document.getElementById('welcome-msg').innerText = `Welcome, ${user.name}!`;
+        
+        try {
+            const teams = await fetchAPI('/admin/teams');
+            let shortlisted = 0;
+            let waitlisted = 0;
+            
+            teams.forEach(t => {
+                if(t.status === 'Shortlisted') shortlisted++;
+                if(t.status === 'Waitlisted') waitlisted++;
+            });
+            
+            document.getElementById('total-teams').innerText = teams.length;
+            document.getElementById('shortlisted-teams').innerHTML = `${shortlisted} <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 45</span>`;
+            document.getElementById('waitlisted-teams').innerHTML = `${waitlisted} <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 5</span>`;
+        } catch (e) {
+            console.error(e);
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('Admin');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/admin-sidebar.html');
+                await loadComponent('navbar-container', '../components/admin-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

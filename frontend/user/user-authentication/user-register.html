@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <style>
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { width: 100%; max-width: 600px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card animate-fade-in">
+            <h2 class="text-center gradient-text mb-2">Student Registration</h2>
+            <form id="registerForm">
+                <div class="grid">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Enrollment No.</label>
+                        <input type="text" id="enrollment_no" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year of Study</label>
+                        <select id="year" class="form-control" required>
+                            <option value="1">1st Year</option>
+                            <option value="2">2nd Year</option>
+                            <option value="3">3rd Year</option>
+                            <option value="4">4th Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Branch</label>
+                        <input type="text" id="branch" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="gender" class="form-control" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label class="form-label">Skills (e.g., React, Python, UI/UX)</label>
+                        <input type="text" id="skills" class="form-control" placeholder="Optional: List your primary skills">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">GitHub URL</label>
+                        <input type="url" id="github_url" class="form-control" placeholder="Optional: https://github.com/yourusername">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">LinkedIn URL</label>
+                        <input type="url" id="linkedin_url" class="form-control" placeholder="Optional: https://linkedin.com/in/yourusername">
+                    </div>
+                </div>
+                <div class="form-group mt-1">
+                    <label class="form-label">College</label>
+                    <select id="college_id" class="form-control" required>
+                        <option value="">Loading active colleges...</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-1" style="width: 100%;">Register</button>
+            </form>
+            <p class="text-center mt-1" style="color: var(--text-secondary); font-size: 0.9rem;">
+                Already have an account? <a href="user-login.html">Login here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // College dropdown populated ONLY by active colleges (SuperAdmin approved)
+                const colleges = await fetchAPI('/users/colleges/active');
+                const collegeSelect = document.getElementById('college_id');
+                collegeSelect.innerHTML = '<option value="">Select your college</option>';
+                colleges.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = c.name;
+                    collegeSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error(error);
+                document.getElementById('college_id').innerHTML = '<option value="">Error loading colleges</option>';
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                phone: document.getElementById('phone').value,
+                enrollment_no: document.getElementById('enrollment_no').value,
+                year: document.getElementById('year').value,
+                branch: document.getElementById('branch').value,
+                gender: document.getElementById('gender').value,
+                skills: document.getElementById('skills').value,
+                github_url: document.getElementById('github_url').value,
+                linkedin_url: document.getElementById('linkedin_url').value,
+                college_id: document.getElementById('college_id').value
+            };
+            
+            try {
+                await fetchAPI('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                alert('Registration successful! Please login.');
+                window.location.href = 'user-login.html';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

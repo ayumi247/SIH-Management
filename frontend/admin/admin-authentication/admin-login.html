@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <style>
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { width: 100%; max-width: 400px; }
+        .text-center { text-align: center; }
+        .mt-1 { margin-top: 1rem; }
+        .mb-2 { margin-bottom: 2rem; }
+        
+        /* Override primary button for admin theme */
+        .btn-admin {
+            background: linear-gradient(45deg, var(--neon-purple), #ff007f);
+            color: var(--text-primary);
+            box-shadow: var(--shadow-glow-purple);
+        }
+        .btn-admin:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(176, 38, 255, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="glass-card auth-card animate-fade-in">
+            <h2 class="text-center mb-2" style="color: var(--neon-purple);">College Admin Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-control" required placeholder="Admin email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" required placeholder="Password">
+                </div>
+                <button type="submit" class="btn btn-admin btn mt-1" style="width: 100%;">Login to Dashboard</button>
+            </form>
+            <p class="text-center mt-1" style="color: var(--text-secondary); font-size: 0.9rem;">
+                Don't have an admin account? <a href="admin-register.html" style="color: var(--neon-purple);">Apply here</a>
+            </p>
+        </div>
+    </div>
+
+    <script src="../../js/api.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const res = await fetchAPI('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                if (res.role === 'Admin') {
+                    window.location.href = '../admin-dashboard/admin-dashboard.html';
+                } else if (res.role === 'Admin_Pending') {
+                    alert('Your admin account is still pending verification by Super-Admin.');
+                } else {
+                    alert('Invalid role. Please login through the appropriate portal.');
+                }
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+<nav class="navbar">
+    <div style="display: flex; gap: 1rem; align-items: center;">
+        <span id="nav-user-name" style="font-weight: 600;">Student Portal</span>
+        <button class="btn btn-secondary" onclick="logout()" style="padding: 0.5rem 1rem;">Logout</button>
+    </div>
+    <script>
+        fetchAPI('/users/me').then(user => {
+            if(user) document.getElementById('nav-user-name').innerText = user.name;
+        }).catch(err => console.log(err));
+    </script>
+</nav>
