@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find a Team | SIH Matchmaker</title>
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="../../css/animations.css">
+    <link rel="stylesheet" href="../../css/dashboard-layout.css">
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <div class="main-wrapper">
+        <div id="navbar-container"></div>
+        <div class="main-content animate-fade-in">
+             <h2>Find a Team</h2>
+             <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
+             <div id="page-content">
+                <div class="glass-card" style="margin-bottom: 2rem;">
+    <p style="color: var(--text-secondary);">Teams in your college that are looking for members.</p>
+</div>
+<div id="teams-list" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <!-- Teams injected here -->
+</div>
+<script>
+    async function initPage(user) {
+        if (user.team_id) {
+            document.getElementById('page-content').innerHTML = '<div class="glass-card"><p>You are already in a team. You cannot request to join another team.</p></div>';
+            return;
+        }
+        
+        try {
+            const availableTeams = await fetchAPI('/teams/available');
+            
+            if (availableTeams.length === 0) {
+                document.getElementById('teams-list').innerHTML = '<p>No available teams found in your college right now.</p>';
+                return;
+            }
+            
+            const html = availableTeams.map(t => `
+                <div class="glass-card">
+                    <h4>${t.name}</h4>
+                    <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">
+                        Theme: ${t.theme || 'N/A'}<br>
+                        Problem Statement: ${t.problem_statement || 'N/A'}<br>
+                        Members: ${t.members ? t.members.length : 0}/6
+                    </p>
+                    <button class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem; width: 100%; margin-top: 0.5rem;" onclick="requestToJoin('${t.id}')">Request to Join</button>
+                </div>
+            `).join('');
+            
+            document.getElementById('teams-list').innerHTML = html;
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    async function requestToJoin(target_team_id) {
+        try {
+            await fetchAPI('/invites/', {
+                method: 'POST',
+                body: JSON.stringify({ target_team_id: target_team_id })
+            });
+            alert('Join request sent successfully!');
+        } catch (error) {
+            alert('Failed to send request: ' + error.message);
+        }
+    }
+</script>
+             </div>
+        </div>
+    </div>
+    
+    <script src="../../js/api.js"></script>
+    <script src="../../js/auth.js"></script>
+    <script src="../../js/ui.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await requireAuth('User');
+            if (user) {
+                await loadComponent('sidebar-container', '../components/user-sidebar.html');
+                await loadComponent('navbar-container', '../components/user-navbar.html');
+                
+                // Highlight active sidebar link
+                setTimeout(() => {
+                    const links = document.querySelectorAll('.sidebar-link');
+                    links.forEach(link => {
+                        if (link.href === window.location.href) {
+                            link.classList.add('active');
+                        }
+                    });
+                }, 100);
+                
+                if (typeof initPage === 'function') {
+                    initPage(user);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -39,6 +39,17 @@ def get_incoming_invites(
         ).all()
 
 
+@router.get("/sent", response_model=list[InviteResponse])
+def get_sent_invites(
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_student),
+):
+    # Get invites sent by this user
+    return db.exec(
+        select(JoinRequest).where(JoinRequest.sender_id == current_user.id)
+    ).all()
+
+
 @router.put("/{invite_id}/accept", response_model=InviteResponse)
 def accept_invite(
     invite_id: uuid.UUID,

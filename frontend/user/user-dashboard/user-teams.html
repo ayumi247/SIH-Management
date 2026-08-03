@@ -14,18 +14,30 @@
     <div class="main-wrapper">
         <div id="navbar-container"></div>
         <div class="main-content animate-fade-in">
-             <h2>Join Requests</h2>
+             <div style="display: flex; justify-content: space-between; align-items: center;">
+                 <h2>Join Requests</h2>
+                 <button class="btn btn-secondary btn-sm" id="toggle-sent-btn" onclick="toggleSentInvites()">Invites Sent</button>
+             </div>
              <hr style="border-color: var(--border-light); margin: 1rem 0 2rem 0;">
              <div id="page-content">
                 <div class="glass-card" style="margin-bottom: 2rem;">
-    <h3 style="color: var(--neon-cyan);">Incoming Invites</h3>
-    <p style="color: var(--text-secondary);">Manage your team join requests here.</p>
+    <h3 id="invites-title" style="color: var(--neon-cyan);">Incoming Invites</h3>
+    <p id="invites-desc" style="color: var(--text-secondary);">Manage your team join requests here.</p>
 </div>
 <div id="invites-list" style="display: flex; flex-direction: column; gap: 1rem;">
     <!-- Invites injected here -->
 </div>
+<div id="sent-invites-list" style="display: none; flex-direction: column; gap: 1rem;">
+    <!-- Sent Invites injected here -->
+</div>
 <script>
+    let showingSent = false;
+
     async function initPage(user) {
+        loadIncomingInvites();
+    }
+    
+    async function loadIncomingInvites() {
         try {
             const invites = await fetchAPI('/invites/incoming');
             
@@ -36,7 +48,6 @@
             
             let html = '';
             for(let inv of invites) {
-                // Determine context
                 let title = inv.target_team_id ? 'Team Invite' : 'Student Requesting to Join';
                 
                 if (inv.status === 'Pending') {
@@ -57,9 +68,62 @@
             
             if (!html) html = '<p>No pending invites right now.</p>';
             document.getElementById('invites-list').innerHTML = html;
-            
         } catch (error) {
             alert('Error: ' + error.message);
+        }
+    }
+
+    async function loadSentInvites() {
+        try {
+            const invites = await fetchAPI('/invites/sent');
+            
+            if (invites.length === 0) {
+                document.getElementById('sent-invites-list').innerHTML = '<p>You have not sent any invites.</p>';
+                return;
+            }
+            
+            let html = '';
+            for(let inv of invites) {
+                let targetInfo = inv.target_team_id ? `Team ID: ${inv.target_team_id}` : `User ID: ${inv.target_user_id}`;
+                html += `
+                    <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4>Invite Sent</h4>
+                            <p style="font-size: 0.9rem; color: var(--text-secondary);">To ${targetInfo}</p>
+                        </div>
+                        <div>
+                            <span style="color: ${inv.status === 'Pending' ? 'var(--neon-pink)' : (inv.status === 'Accepted' ? 'var(--neon-cyan)' : 'gray')}; font-weight: bold;">${inv.status}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            document.getElementById('sent-invites-list').innerHTML = html;
+        } catch (error) {
+            alert('Error: ' + error.message);
+        }
+    }
+    
+    function toggleSentInvites() {
+        showingSent = !showingSent;
+        const btn = document.getElementById('toggle-sent-btn');
+        const title = document.getElementById('invites-title');
+        const desc = document.getElementById('invites-desc');
+        
+        if (showingSent) {
+            btn.innerText = 'Incoming Invites';
+            title.innerText = 'Sent Invites';
+            desc.innerText = 'Track the status of join requests you have sent.';
+            document.getElementById('invites-list').style.display = 'none';
+            document.getElementById('sent-invites-list').style.display = 'flex';
+            loadSentInvites();
+        } else {
+            btn.innerText = 'Invites Sent';
+            title.innerText = 'Incoming Invites';
+            desc.innerText = 'Manage your team join requests here.';
+            document.getElementById('sent-invites-list').style.display = 'none';
+            document.getElementById('invites-list').style.display = 'flex';
+            loadIncomingInvites();
         }
     }
     
