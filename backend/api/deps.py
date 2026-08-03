@@ -1,9 +1,11 @@
-from fastapi import Depends, HTTPException, status, Request
-from jose import jwt, JWTError
+from fastapi import Depends, HTTPException, Request, status
+from jose import JWTError, jwt
 from sqlmodel import Session
+
 from core.config import settings
-from db.models import User, Role
+from db.models import Role, User
 from db.session import get_session
+
 
 def get_token_from_header(request: Request) -> str:
     auth_header = request.headers.get("Authorization")

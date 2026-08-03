@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, Response
-from sqlmodel import Session
-from db.session import get_session
-from schemas.user import UserCreate, AdminCreate, UserResponse
-from services.auth_service import authenticate_user, create_user, create_admin_request
-from core.security import create_access_token
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from sqlmodel import Session
+
+from core.security import create_access_token
+from db.session import get_session
+from schemas.user import AdminCreate, UserCreate, UserResponse
+from services.auth_service import authenticate_user, create_admin_request, create_user
 
 router = APIRouter()
 

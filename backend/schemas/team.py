@@ -1,8 +1,10 @@
-from pydantic import BaseModel
-from typing import Optional, List
 import uuid
+
+from pydantic import BaseModel
+
 from db.models import TeamStatus
 from schemas.user import UserResponse
+
 
 class TeamCreate(BaseModel):
     name: str
@@ -21,4 +23,4 @@ class TeamResponse(BaseModel):
         from_attributes = True
 
 class TeamWithMembersResponse(TeamResponse):
-    members: List[UserResponse]
+    members: list[UserResponse]

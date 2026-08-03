@@ -1,8 +1,10 @@
 from sqlmodel import Session, select
-from core.security import verify_password, get_password_hash, create_access_token
-from db.models import User, College, Role
-from schemas.user import UserCreate, AdminCreate
+
 from core.exceptions import BadRequestException, UnauthorizedException
+from core.security import get_password_hash, verify_password
+from db.models import College, Role, User
+from schemas.user import AdminCreate, UserCreate
+
 
 def authenticate_user(db: Session, email: str, password: str) -> User:
     user = db.exec(select(User).where(User.email == email)).first()

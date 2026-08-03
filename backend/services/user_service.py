@@ -1,6 +1,8 @@
 from sqlmodel import Session, select
-from db.models import User, Role
+
 from core.exceptions import NotFoundException
+from db.models import Role, User
+
 
 def get_user_by_id(db: Session, user_id: str) -> User:
     user = db.get(User, user_id)

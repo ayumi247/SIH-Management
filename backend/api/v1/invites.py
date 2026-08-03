@@ -1,11 +1,12 @@
+import uuid
+
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from typing import List
-import uuid
-from db.session import get_session
-from db.models import User, JoinRequest, InviteStatus
-from schemas.invite import InviteCreate, InviteResponse
+
 from api.deps import get_current_student
+from db.models import InviteStatus, JoinRequest, User
+from db.session import get_session
+from schemas.invite import InviteCreate, InviteResponse
 from services.invite_service import send_invite, update_invite_status
 
 router = APIRouter()
@@ -18,7 +19,7 @@ def create_invite(
 ):
     return send_invite(db, invite_in, current_user)
 
-@router.get("/incoming", response_model=List[InviteResponse])
+@router.get("/incoming", response_model=list[InviteResponse])
 def get_incoming_invites(
     db: Session = Depends(get_session),
     current_user: User = Depends(get_current_student)

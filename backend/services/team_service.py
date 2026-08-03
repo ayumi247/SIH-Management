@@ -1,8 +1,11 @@
-from sqlmodel import Session, select
-from db.models import Team, User, TeamStatus, College
-from schemas.team import TeamCreate
-from core.exceptions import BadRequestException, NotFoundException
 import uuid
+
+from sqlmodel import Session, select
+
+from core.exceptions import BadRequestException, NotFoundException
+from db.models import Team, TeamStatus, User
+from schemas.team import TeamCreate
+
 
 def create_team(db: Session, team_in: TeamCreate, user: User) -> Team:
     if user.team_id:

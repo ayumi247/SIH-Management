@@ -1,7 +1,10 @@
-from sqlmodel import Session, select
-from db.models import User, College, Role
-from core.exceptions import NotFoundException
 import uuid
+
+from sqlmodel import Session
+
+from core.exceptions import NotFoundException
+from db.models import College, Role, User
+
 
 def approve_admin(db: Session, admin_id: uuid.UUID) -> User:
     admin = db.get(User, admin_id)

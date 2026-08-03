@@ -1,12 +1,13 @@
+
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from typing import List
-from db.session import get_session
-from db.models import User, Team, TeamStatus
-from schemas.team import TeamCreate, TeamResponse, TeamWithMembersResponse
+
 from api.deps import get_current_student
-from services.team_service import create_team
 from core.exceptions import NotFoundException
+from db.models import Team, TeamStatus, User
+from db.session import get_session
+from schemas.team import TeamCreate, TeamResponse, TeamWithMembersResponse
+from services.team_service import create_team
 
 router = APIRouter()
 
@@ -28,7 +29,7 @@ def get_my_team(
     team = db.get(Team, current_user.team_id)
     return team
 
-@router.get("/available", response_model=List[TeamResponse])
+@router.get("/available", response_model=list[TeamResponse])
 def get_available_teams(
     db: Session = Depends(get_session),
     current_user: User = Depends(get_current_student)

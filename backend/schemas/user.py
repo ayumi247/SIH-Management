@@ -1,7 +1,9 @@
-from pydantic import BaseModel, EmailStr
-from typing import Optional
 import uuid
+
+from pydantic import BaseModel, EmailStr
+
 from db.models import Role
+
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -12,9 +14,9 @@ class UserCreate(BaseModel):
     year: str
     branch: str
     gender: str
-    skills: Optional[str] = None
-    github_url: Optional[str] = None
-    linkedin_url: Optional[str] = None
+    skills: str | None = None
+    github_url: str | None = None
+    linkedin_url: str | None = None
     college_id: uuid.UUID
 
 class AdminCreate(BaseModel):
@@ -30,9 +32,9 @@ class AdminCreate(BaseModel):
     college_name: str
 
 class UserUpdate(BaseModel):
-    github_url: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    skills: Optional[str] = None
+    github_url: str | None = None
+    linkedin_url: str | None = None
+    skills: str | None = None
 
 class UserResponse(BaseModel):
     id: uuid.UUID
@@ -43,13 +45,13 @@ class UserResponse(BaseModel):
     year: str
     branch: str
     gender: str
-    skills: Optional[str] = None
-    github_url: Optional[str] = None
-    linkedin_url: Optional[str] = None
-    position: Optional[str] = None
+    skills: str | None = None
+    github_url: str | None = None
+    linkedin_url: str | None = None
+    position: str | None = None
     role: Role
     college_id: uuid.UUID
-    team_id: Optional[uuid.UUID] = None
+    team_id: uuid.UUID | None = None
 
     class Config:
         from_attributes = True

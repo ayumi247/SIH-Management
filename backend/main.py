@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
 from core.config import settings
 
 app = FastAPI(title=settings.PROJECT_NAME)
@@ -27,7 +28,7 @@ def root():
 def health_check():
     return {"status": "ok"}
 
-from api.v1 import auth, users, teams, invites, admin, superadmin
+from api.v1 import admin, auth, invites, superadmin, teams, users
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["Users"])

@@ -1,12 +1,13 @@
+
 from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
-from typing import List
-from db.session import get_session
-from db.models import User, College, Team, TeamStatus
-from core.exceptions import BadRequestException
-from schemas.user import UserResponse, UserUpdate
-from schemas.college import CollegeResponse
+
 from api.deps import get_current_user
+from core.exceptions import BadRequestException
+from db.models import College, Team, TeamStatus, User
+from db.session import get_session
+from schemas.college import CollegeResponse
+from schemas.user import UserResponse, UserUpdate
 from services.user_service import get_available_teammates
 
 router = APIRouter()
@@ -41,22 +42,22 @@ def delete_me(db: Session = Depends(get_session), current_user: User = Depends(g
     db.commit()
     return {"message": "Account deleted successfully"}
 
-@router.get("/teammates", response_model=List[UserResponse])
+@router.get("/teammates", response_model=list[UserResponse])
 def search_teammates(
     db: Session = Depends(get_session), 
     current_user: User = Depends(get_current_user)
 ):
     return get_available_teammates(db, str(current_user.college_id))
 
-@router.get("/colleges/active", response_model=List[CollegeResponse])
+@router.get("/colleges/active", response_model=list[CollegeResponse])
 def get_active_colleges(db: Session = Depends(get_session)):
     return db.exec(select(College).where(College.is_active == True)).all()
 
-@router.get("/colleges", response_model=List[CollegeResponse])
+@router.get("/colleges", response_model=list[CollegeResponse])
 def get_all_colleges(db: Session = Depends(get_session)):
     return db.exec(select(College)).all()
 
-@router.get("/eligible", response_model=List[UserResponse])
+@router.get("/eligible", response_model=list[UserResponse])
 def get_eligible_students(db: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
     return db.exec(
         select(User).where(

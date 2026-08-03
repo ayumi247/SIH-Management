@@ -1,7 +1,6 @@
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
@@ -16,12 +15,14 @@ if config.config_file_name is not None:
 
 import os
 import sys
+
 # Add backend directory to sys.path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from sqlmodel import SQLModel
+
 from core.config import settings
 from db.models import *
-from sqlmodel import SQLModel
 
 target_metadata = SQLModel.metadata
 
