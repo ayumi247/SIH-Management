@@ -19,6 +19,7 @@ class UserCreate(BaseModel):
     linkedin_url: str | None = None
     college_id: uuid.UUID
 
+
 class AdminCreate(BaseModel):
     email: EmailStr
     password: str
@@ -31,10 +32,12 @@ class AdminCreate(BaseModel):
     position: str
     college_name: str
 
+
 class UserUpdate(BaseModel):
     github_url: str | None = None
     linkedin_url: str | None = None
     skills: str | None = None
+
 
 class UserResponse(BaseModel):
     id: uuid.UUID

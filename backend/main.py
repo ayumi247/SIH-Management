@@ -9,24 +9,27 @@ app = FastAPI(title=settings.PROJECT_NAME)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5500", 
-        "http://127.0.0.1:5500", 
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
         "http://localhost:8000",
-        settings.FRONTEND_URL
+        settings.FRONTEND_URL,
     ],
     allow_origin_regex=r"https://.*\.vercel\.app",
-    allow_credentials=True, # Required for HttpOnly cookies
+    allow_credentials=True,  # Required for HttpOnly cookies
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def root():
     return {"message": "Welcome to SIH Matchmaker API"}
 
+
 @app.get("/api/v1/health")
 def health_check():
     return {"status": "ok"}
+
 
 from api.v1 import admin, auth, invites, superadmin, teams, users
 

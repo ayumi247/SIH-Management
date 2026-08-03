@@ -9,12 +9,13 @@ class InviteCreate(BaseModel):
     target_user_id: uuid.UUID | None = None
     target_team_id: uuid.UUID | None = None
 
+
 class InviteResponse(BaseModel):
     id: uuid.UUID
     sender_id: uuid.UUID
     target_team_id: uuid.UUID | None
     target_user_id: uuid.UUID | None
     status: InviteStatus
-    
+
     class Config:
         from_attributes = True

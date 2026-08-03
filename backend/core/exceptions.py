@@ -5,18 +5,24 @@ class NotFoundException(HTTPException):
     def __init__(self, detail: str = "Resource not found"):
         super().__init__(status_code=status.HTTP_404_NOT_FOUND, detail=detail)
 
+
 class BadRequestException(HTTPException):
     def __init__(self, detail: str = "Bad request"):
         super().__init__(status_code=status.HTTP_400_BAD_REQUEST, detail=detail)
+
 
 class UnauthorizedException(HTTPException):
     def __init__(self, detail: str = "Not authorized"):
         super().__init__(status_code=status.HTTP_401_UNAUTHORIZED, detail=detail)
 
+
 class ForbiddenException(HTTPException):
     def __init__(self, detail: str = "Forbidden"):
         super().__init__(status_code=status.HTTP_403_FORBIDDEN, detail=detail)
 
+
 class RateLimitExceededException(HTTPException):
-    def __init__(self, detail: str = "Rate limit exceeded. Maximum 5 invites per minute allowed."):
+    def __init__(
+        self, detail: str = "Rate limit exceeded. Maximum 5 invites per minute allowed."
+    ):
         super().__init__(status_code=status.HTTP_429_TOO_MANY_REQUESTS, detail=detail)

@@ -11,6 +11,7 @@ class TeamCreate(BaseModel):
     problem_statement_id: str
     required_skills: str
 
+
 class TeamResponse(BaseModel):
     id: uuid.UUID
     name: str
@@ -18,9 +19,10 @@ class TeamResponse(BaseModel):
     required_skills: str
     status: TeamStatus
     college_id: uuid.UUID
-    
+
     class Config:
         from_attributes = True
+
 
 class TeamWithMembersResponse(TeamResponse):
     members: list[UserResponse]
