@@ -4,7 +4,7 @@ from typing import List
 from db.session import get_session
 from db.models import User, Team, TeamStatus
 from schemas.team import TeamCreate, TeamResponse, TeamWithMembersResponse
-from api.deps import get_current_user
+from api.deps import get_current_student
 from services.team_service import create_team
 from core.exceptions import NotFoundException
 
@@ -14,14 +14,14 @@ router = APIRouter()
 def create_new_team(
     team_in: TeamCreate,
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     return create_team(db, team_in, current_user)
 
 @router.get("/my-team", response_model=TeamWithMembersResponse)
 def get_my_team(
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     if not current_user.team_id:
         raise NotFoundException(detail="You are not in a team")
@@ -31,7 +31,7 @@ def get_my_team(
 @router.get("/available", response_model=List[TeamResponse])
 def get_available_teams(
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     # Fetch teams in same college that have < 6 members.
     teams = db.exec(

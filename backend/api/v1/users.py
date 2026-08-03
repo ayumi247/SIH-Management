@@ -2,7 +2,8 @@ from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
 from typing import List
 from db.session import get_session
-from db.models import User, College
+from db.models import User, College, Team, TeamStatus
+from core.exceptions import BadRequestException
 from schemas.user import UserResponse, UserUpdate
 from schemas.college import CollegeResponse
 from api.deps import get_current_user
@@ -31,7 +32,11 @@ def update_me(
 
 @router.delete("/me")
 def delete_me(db: Session = Depends(get_session), current_user: User = Depends(get_current_user)):
-    # Simple delete for MVP
+    if current_user.team_id:
+        team = db.get(Team, current_user.team_id)
+        if team and team.status != TeamStatus.Pending:
+            raise BadRequestException(detail="Cannot delete account while your team is Shortlisted or Waitlisted.")
+            
     db.delete(current_user)
     db.commit()
     return {"message": "Account deleted successfully"}

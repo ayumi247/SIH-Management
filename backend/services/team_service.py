@@ -29,6 +29,9 @@ def create_team(db: Session, team_in: TeamCreate, user: User) -> Team:
     return new_team
 
 def add_user_to_team(db: Session, team_id: uuid.UUID, target_user: User) -> None:
+    if target_user.team_id:
+        raise BadRequestException(detail="User is already in a team")
+        
     team = db.get(Team, team_id)
     if not team:
         raise NotFoundException(detail="Team not found")
@@ -54,12 +57,13 @@ def admin_update_team_status(db: Session, team_id: uuid.UUID, new_status: TeamSt
     if not team or team.college_id != admin.college_id:
         raise NotFoundException(detail="Team not found")
         
-    if len(team.members) != 6:
-        raise BadRequestException(detail="Team must have exactly 6 members to be shortlisted/waitlisted")
-        
-    has_female = any(m.gender.lower() == "female" for m in team.members)
-    if not has_female:
-        raise BadRequestException(detail="Team must have at least 1 female member to be shortlisted/waitlisted")
+    if new_status in [TeamStatus.Shortlisted, TeamStatus.Waitlisted]:
+        if len(team.members) != 6:
+            raise BadRequestException(detail="Team must have exactly 6 members to be shortlisted/waitlisted")
+            
+        has_female = any(m.gender.lower() == "female" for m in team.members)
+        if not has_female:
+            raise BadRequestException(detail="Team must have at least 1 female member to be shortlisted/waitlisted")
         
     # Check limits
     if new_status == TeamStatus.Shortlisted and team.status != TeamStatus.Shortlisted:

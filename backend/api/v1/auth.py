@@ -21,8 +21,8 @@ def login(data: LoginData, response: Response, db: Session = Depends(get_session
         key="access_token",
         value=f"Bearer {access_token}",
         httponly=True,
-        samesite="lax",
-        secure=False, # Set True in prod
+        samesite="none",
+        secure=True, # Required for cross-origin in prod
         max_age=10080 * 60
     )
     return {"message": "Logged in successfully", "role": user.role}
@@ -37,5 +37,10 @@ def register_admin(admin_in: AdminCreate, db: Session = Depends(get_session)):
     
 @router.post("/logout")
 def logout(response: Response):
-    response.delete_cookie("access_token")
+    response.delete_cookie(
+        key="access_token",
+        httponly=True,
+        samesite="none",
+        secure=True
+    )
     return {"message": "Logged out successfully"}

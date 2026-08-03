@@ -22,6 +22,10 @@ app.add_middleware(
 def root():
     return {"message": "Welcome to SIH Matchmaker API"}
 
+@app.get("/api/v1/health")
+def health_check():
+    return {"status": "ok"}
+
 from api.v1 import auth, users, teams, invites, admin, superadmin
 
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])

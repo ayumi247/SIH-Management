@@ -5,7 +5,7 @@ import uuid
 from db.session import get_session
 from db.models import User, JoinRequest, InviteStatus
 from schemas.invite import InviteCreate, InviteResponse
-from api.deps import get_current_user
+from api.deps import get_current_student
 from services.invite_service import send_invite, update_invite_status
 
 router = APIRouter()
@@ -14,14 +14,14 @@ router = APIRouter()
 def create_invite(
     invite_in: InviteCreate,
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     return send_invite(db, invite_in, current_user)
 
 @router.get("/incoming", response_model=List[InviteResponse])
 def get_incoming_invites(
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     # Get invites sent to the user OR the user's team
     if current_user.team_id:
@@ -37,7 +37,7 @@ def get_incoming_invites(
 def accept_invite(
     invite_id: uuid.UUID,
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     return update_invite_status(db, invite_id, InviteStatus.Accepted, current_user)
 
@@ -45,6 +45,6 @@ def accept_invite(
 def reject_invite(
     invite_id: uuid.UUID,
     db: Session = Depends(get_session),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_student)
 ):
     return update_invite_status(db, invite_id, InviteStatus.Rejected, current_user)

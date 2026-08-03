@@ -64,11 +64,11 @@ class User(SQLModel, table=True):
     
     sent_requests: List["JoinRequest"] = Relationship(
         back_populates="sender",
-        sa_relationship_kwargs={"foreign_keys": "[JoinRequest.sender_id]"}
+        sa_relationship_kwargs={"foreign_keys": "[JoinRequest.sender_id]", "cascade": "all, delete-orphan"}
     )
     received_requests: List["JoinRequest"] = Relationship(
         back_populates="target_user",
-        sa_relationship_kwargs={"foreign_keys": "[JoinRequest.target_user_id]"}
+        sa_relationship_kwargs={"foreign_keys": "[JoinRequest.target_user_id]", "cascade": "all, delete-orphan"}
     )
 
 class JoinRequest(SQLModel, table=True):

@@ -44,7 +44,7 @@
         try {
             const team = await fetchAPI(`/teams/${user.team_id}`);
             document.getElementById('team-name').innerText = team.name;
-            document.getElementById('team-ps').innerText = team.problem_statement;
+            document.getElementById('team-ps').innerText = team.problem_statement_id;
             document.getElementById('team-status-badge').innerText = team.status;
             
             const members = await fetchAPI(`/teams/${user.team_id}/members`);
@@ -55,7 +55,6 @@
                     <div>
                         <strong>${m.name}</strong> 
                         <span style="font-size: 0.8rem; color: var(--text-secondary);">(${m.gender})</span>
-                        ${m.id === team.leader_id ? '<span style="color: var(--neon-cyan); font-size: 0.8rem; margin-left: 0.5rem; border: 1px solid var(--neon-cyan); padding: 2px 6px; border-radius: 4px;">LEADER</span>' : ''}
                     </div>
                     <div style="color: var(--text-secondary);">${m.branch} - Year ${m.year}</div>
                 </div>

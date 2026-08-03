@@ -19,6 +19,10 @@ def send_invite(db: Session, invite_in: InviteCreate, sender: User) -> JoinReque
             raise NotFoundException(detail="Target user not found or in different college")
         if not sender.team_id:
             raise BadRequestException(detail="You must be in a team to invite users")
+        if target_user.id == sender.id:
+            raise BadRequestException(detail="You cannot invite yourself")
+        if target_user.team_id:
+            raise BadRequestException(detail="User is already in a team")
             
         req = JoinRequest(
             sender_id=sender.id,
@@ -31,6 +35,8 @@ def send_invite(db: Session, invite_in: InviteCreate, sender: User) -> JoinReque
             raise NotFoundException(detail="Target team not found or in different college")
         if sender.team_id:
             raise BadRequestException(detail="You are already in a team")
+        if len(target_team.members) >= 6:
+            raise BadRequestException(detail="Team is already full")
             
         req = JoinRequest(
             sender_id=sender.id,

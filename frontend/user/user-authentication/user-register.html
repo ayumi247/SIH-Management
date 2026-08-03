@@ -129,6 +129,10 @@
                 college_id: document.getElementById('college_id').value
             };
             
+            if (!data.college_id) {
+                return alert('Please select your college from the dropdown.');
+            }
+            
             try {
                 await fetchAPI('/auth/register', {
                     method: 'POST',
