@@ -57,6 +57,7 @@
                 });
                 
                 if (res.role === 'SuperAdmin') {
+                    localStorage.setItem('access_token', res.access_token);
                     window.location.href = '../super-admin-Dashboard/super-admin-dashboard.html';
                 } else {
                     alert('Invalid credentials for Super-Admin access.');

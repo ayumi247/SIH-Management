@@ -13,19 +13,10 @@ class LoginData(BaseModel):
     password: str
 
 @router.post("/login")
-def login(data: LoginData, response: Response, db: Session = Depends(get_session)):
+def login(data: LoginData, db: Session = Depends(get_session)):
     user = authenticate_user(db, data.email, data.password)
     access_token = create_access_token(subject=user.id)
-    # Set HttpOnly cookie
-    response.set_cookie(
-        key="access_token",
-        value=f"Bearer {access_token}",
-        httponly=True,
-        samesite="none",
-        secure=True, # Required for cross-origin in prod
-        max_age=10080 * 60
-    )
-    return {"message": "Logged in successfully", "role": user.role}
+    return {"message": "Logged in successfully", "role": user.role, "access_token": access_token}
 
 @router.post("/register", response_model=UserResponse)
 def register_user(user_in: UserCreate, db: Session = Depends(get_session)):
@@ -36,11 +27,5 @@ def register_admin(admin_in: AdminCreate, db: Session = Depends(get_session)):
     return create_admin_request(db, admin_in)
     
 @router.post("/logout")
-def logout(response: Response):
-    response.delete_cookie(
-        key="access_token",
-        httponly=True,
-        samesite="none",
-        secure=True
-    )
+def logout():
     return {"message": "Logged out successfully"}

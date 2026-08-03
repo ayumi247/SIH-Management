@@ -60,6 +60,7 @@
                 });
                 
                 if (res.role === 'User') {
+                    localStorage.setItem('access_token', res.access_token);
                     window.location.href = '../user-dashboard/user-dashboard.html';
                 } else {
                     alert('Invalid role. Please login through the appropriate portal.');

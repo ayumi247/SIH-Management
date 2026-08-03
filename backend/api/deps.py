@@ -5,13 +5,13 @@ from core.config import settings
 from db.models import User, Role
 from db.session import get_session
 
-def get_token_from_cookie(request: Request) -> str:
-    auth_cookie = request.cookies.get("access_token")
-    if not auth_cookie:
+def get_token_from_header(request: Request) -> str:
+    auth_header = request.headers.get("Authorization")
+    if not auth_header:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated")
     
     try:
-        scheme, token = auth_cookie.split()
+        scheme, token = auth_header.split()
         if scheme.lower() != "bearer":
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid auth credentials")
         return token
@@ -19,7 +19,7 @@ def get_token_from_cookie(request: Request) -> str:
          raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid auth credentials")
 
 def get_current_user(
-    db: Session = Depends(get_session), token: str = Depends(get_token_from_cookie)
+    db: Session = Depends(get_session), token: str = Depends(get_token_from_header)
 ) -> User:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])

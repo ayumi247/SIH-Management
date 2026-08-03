@@ -10,6 +10,7 @@ async function checkAuthStatus() {
 async function logout() {
     try {
         await fetchAPI('/auth/logout', { method: 'POST' });
+        localStorage.removeItem('access_token');
         // Redirect to root level index
         window.location.href = '../../index.html';
     } catch (error) {

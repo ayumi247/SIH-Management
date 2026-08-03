@@ -61,6 +61,7 @@
                 });
                 
                 if (res.role === 'Admin') {
+                    localStorage.setItem('access_token', res.access_token);
                     window.location.href = '../admin-dashboard/admin-dashboard.html';
                 } else if (res.role === 'Admin_Pending') {
                     alert('Your admin account is still pending verification by Super-Admin.');

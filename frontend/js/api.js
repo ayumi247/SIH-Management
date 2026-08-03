@@ -7,9 +7,13 @@ async function fetchAPI(endpoint, options = {}) {
     const defaultOptions = {
         headers: {
             'Content-Type': 'application/json'
-        },
-        credentials: 'include' // crucial for HttpOnly cookies
+        }
     };
+    
+    const token = localStorage.getItem('access_token');
+    if (token) {
+        defaultOptions.headers['Authorization'] = `Bearer ${token}`;
+    }
     
     const finalOptions = { ...defaultOptions, ...options };
     if (options.headers) {
