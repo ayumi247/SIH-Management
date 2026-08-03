@@ -37,14 +37,14 @@ jobs:
 
     - name: Security scan with Bandit
       run: |
-        bandit -r . -c bandit.yaml || echo "Bandit found potential issues, but continuing..."
+        bandit -r . || echo "Bandit found potential issues, but continuing..."
 
     - name: Run unit tests with pytest
       env:
         SECRET_KEY: "test_secret_key_for_ci"
         DATABASE_URL: "sqlite:///./test.db"
       run: |
-        pytest tests/
+        python -m pytest tests/
 
   frontend-checks:
     runs-on: ubuntu-latest
