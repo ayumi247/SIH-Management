@@ -31,11 +31,7 @@
         }
         
         try {
-            const team = await fetchAPI(`/teams/${user.team_id}`);
-            if (team.leader_id !== user.id) {
-                document.getElementById('page-content').innerHTML = '<div class="glass-card"><p>Only the team leader can send invites.</p></div>';
-                return;
-            }
+            const team = await fetchAPI(`/teams/my-team`);
             
             const eligible = await fetchAPI('/users/eligible');
             

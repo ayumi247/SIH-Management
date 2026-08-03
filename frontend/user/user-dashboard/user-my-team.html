@@ -42,12 +42,12 @@
         document.getElementById('team-content').style.display = 'block';
         
         try {
-            const team = await fetchAPI(`/teams/${user.team_id}`);
+            const team = await fetchAPI(`/teams/my-team`);
             document.getElementById('team-name').innerText = team.name;
             document.getElementById('team-ps').innerText = team.problem_statement_id;
             document.getElementById('team-status-badge').innerText = team.status;
             
-            const members = await fetchAPI(`/teams/${user.team_id}/members`);
+            const members = team.members;
             document.getElementById('member-count').innerText = members.length;
             
             const html = members.map(m => `
