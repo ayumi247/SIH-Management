@@ -12,7 +12,8 @@ app.add_middleware(
         "http://127.0.0.1:5500", 
         "http://localhost:8000",
         settings.FRONTEND_URL
-    ], 
+    ],
+    allow_origin_regex=r"https://.*\.vercel\.app",
     allow_credentials=True, # Required for HttpOnly cookies
     allow_methods=["*"],
     allow_headers=["*"],
