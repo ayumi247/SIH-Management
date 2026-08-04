@@ -42,8 +42,8 @@
                 <div class="glass-card">
                     <h4>${t.name}</h4>
                     <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">
-                        Theme: ${t.theme || 'N/A'}<br>
-                        Problem Statement: ${t.problem_statement || 'N/A'}<br>
+                        Problem ID: ${t.problem_statement_id || 'N/A'}<br>
+                        Required Skills: ${t.required_skills || 'N/A'}<br>
                         Members: ${t.members ? t.members.length : 0}/6
                     </p>
                     <button class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem; width: 100%; margin-top: 0.5rem;" onclick="requestToJoin('${t.id}')">Request to Join</button>

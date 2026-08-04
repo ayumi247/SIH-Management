@@ -39,10 +39,14 @@ def delete_me(
 ):
     if current_user.team_id:
         team = db.get(Team, current_user.team_id)
-        if team and team.status != TeamStatus.Pending:
-            raise BadRequestException(
-                detail="Cannot delete account while your team is Shortlisted or Waitlisted."
-            )
+        if team:
+            if team.status != TeamStatus.Pending:
+                raise BadRequestException(
+                    detail="Cannot delete account while your team is Shortlisted or Waitlisted."
+                )
+            # If the user is the only member, delete the team entirely
+            if len(team.members) == 1:
+                db.delete(team)
 
     db.delete(current_user)
     db.commit()
@@ -75,6 +79,18 @@ def get_eligible_students(
             User.college_id == current_user.college_id,
             User.team_id == None,
             User.role == "User",
+            User.id != current_user.id,
+        )
+    ).all()
+
+
+@router.get("/college-members", response_model=list[UserResponse])
+def get_college_members(
+    db: Session = Depends(get_session), current_user: User = Depends(get_current_user)
+):
+    return db.exec(
+        select(User).where(
+            User.college_id == current_user.college_id,
             User.id != current_user.id,
         )
     ).all()

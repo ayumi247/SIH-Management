@@ -51,3 +51,12 @@ def get_college_teams(
     super_admin: User = Depends(get_current_super_admin),
 ):
     return db.exec(select(Team).where(Team.college_id == college_id)).all()
+
+
+@router.get("/colleges/{college_id}/users", response_model=list[UserResponse])
+def get_college_users(
+    college_id: uuid.UUID,
+    db: Session = Depends(get_session),
+    super_admin: User = Depends(get_current_super_admin),
+):
+    return db.exec(select(User).where(User.college_id == college_id)).all()

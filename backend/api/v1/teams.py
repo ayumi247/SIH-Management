@@ -31,7 +31,7 @@ def get_my_team(
     return team
 
 
-@router.get("/available", response_model=list[TeamResponse])
+@router.get("/available", response_model=list[TeamWithMembersResponse])
 def get_available_teams(
     db: Session = Depends(get_session),
     current_user: User = Depends(get_current_student),
