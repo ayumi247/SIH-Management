@@ -87,6 +87,11 @@
     color: rgba(255, 255, 255, 0.3);
 }
 
+select.form-control option {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+}
+
 /* SIH Hacker Theme Elements */
 .skill-tag {
     font-family: 'Fira Code', monospace !important;
