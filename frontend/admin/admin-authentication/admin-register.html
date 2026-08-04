@@ -22,12 +22,32 @@
             box-shadow: var(--shadow-glow-purple);
         }
         .btn-admin:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(176, 38, 255, 0.6); }
+
+        .admin-notice {
+            background: rgba(176, 38, 255, 0.05);
+            border: 1px solid rgba(176, 38, 255, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #a1a1aa;
+            line-height: 1.5;
+        }
+        .admin-notice strong {
+            color: #fff;
+        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <div class="glass-card auth-card animate-fade-in">
             <h2 class="text-center mb-2" style="color: var(--neon-purple);">Apply for College Admin</h2>
+            
+            <div class="admin-notice">
+                <strong>Note:</strong> Only a single Administrator is permitted per institution. Upon submission, your application will undergo a verification process. Please allow up to 24 hours for your account to be reviewed and approved by our Team.
+            </div>
+
             <form id="registerForm">
                 <div class="grid">
                     <div class="form-group">
@@ -111,7 +131,7 @@
                     method: 'POST',
                     body: JSON.stringify(data)
                 });
-                alert('Application submitted successfully! Please wait up to 24 hours for Super-Admin verification.');
+                alert('Application submitted successfully! Please allow up to 24 hours for your account to be reviewed and approved by our Team.');
                 window.location.href = 'admin-login.html';
             } catch (error) {
                 alert(error.message);

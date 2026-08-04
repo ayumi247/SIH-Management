@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from db.models import InviteStatus
 
@@ -17,5 +17,4 @@ class InviteResponse(BaseModel):
     target_user_id: uuid.UUID | None
     status: InviteStatus
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

@@ -1,6 +1,6 @@
 import uuid
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from db.models import TeamStatus
 from schemas.user import UserResponse
@@ -26,8 +26,7 @@ class TeamResponse(BaseModel):
     status: TeamStatus
     college_id: uuid.UUID
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class TeamWithMembersResponse(TeamResponse):
