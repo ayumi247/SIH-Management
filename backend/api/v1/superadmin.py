@@ -1,6 +1,7 @@
 import uuid
 
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from api.deps import get_current_super_admin
@@ -59,4 +60,8 @@ def get_college_users(
     db: Session = Depends(get_session),
     super_admin: User = Depends(get_current_super_admin),
 ):
-    return db.exec(select(User).where(User.college_id == college_id)).all()
+    return db.exec(
+        select(User)
+        .options(selectinload(User.team))
+        .where(User.college_id == college_id)
+    ).all()

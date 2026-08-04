@@ -95,6 +95,7 @@
                             <strong>Branch:</strong> ${s.branch}<br>
                             <strong>Year:</strong> ${s.year}<br>
                             <strong>Team ID:</strong> ${s.team_id || 'None'}<br>
+                            ${s.team_name ? `<strong>Team Name:</strong> <span style="color: var(--neon-purple);">${s.team_name}</span><br>` : ''}
                             ${s.position ? `<strong>Position:</strong> ${s.position}` : ''}
                         </div>
                     </div>

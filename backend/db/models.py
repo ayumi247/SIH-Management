@@ -83,6 +83,10 @@ class User(SQLModel, table=True):
         },
     )
 
+    @property
+    def team_name(self) -> str | None:
+        return self.team.name if self.team else None
+
 
 class JoinRequest(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)

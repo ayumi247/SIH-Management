@@ -35,9 +35,10 @@
             
             const html = members.map(s => `
                 <div class="glass-card">
-                    <h4>${s.name}</h4>
+                    <h4>${s.name} ${s.role === 'Admin' ? '<span style="font-size: 0.75rem; padding: 0.15rem 0.4rem; border-radius: 4px; background: rgba(255, 0, 255, 0.2); color: var(--neon-pink); vertical-align: middle; margin-left: 0.5rem;">Admin</span>' : ''}</h4>
                     <p style="font-size: 0.9rem; color: var(--text-secondary); margin: 0.5rem 0;">
                         ${s.branch} - Year ${s.year}<br>
+                        ${s.team_name ? `Team: <strong style="color: var(--neon-purple);">${s.team_name}</strong><br>` : ''}
                         <strong>Email:</strong> ${s.email}<br>
                         <strong>Phone:</strong> ${s.phone}
                     </p>

@@ -55,6 +55,7 @@ class UserResponse(BaseModel):
     role: Role
     college_id: uuid.UUID
     team_id: uuid.UUID | None = None
+    team_name: str | None = None
 
     class Config:
         from_attributes = True

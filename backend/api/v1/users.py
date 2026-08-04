@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+from sqlalchemy.orm import selectinload
 from sqlmodel import Session, select
 
 from api.deps import get_current_user
@@ -89,7 +90,9 @@ def get_college_members(
     db: Session = Depends(get_session), current_user: User = Depends(get_current_user)
 ):
     return db.exec(
-        select(User).where(
+        select(User)
+        .options(selectinload(User.team))
+        .where(
             User.college_id == current_user.college_id,
             User.id != current_user.id,
         )
