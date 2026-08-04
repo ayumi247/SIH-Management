@@ -131,23 +131,22 @@
 
 /* Button Shimmer */
 @keyframes shimmer {
-    0% { background-position: -200% center; }
-    100% { background-position: 200% center; }
+    100% { transform: translateX(100%); }
 }
 .btn-shimmer {
-    background-size: 200% auto;
-    background-image: linear-gradient(
-        45deg, 
-        rgba(255,255,255,0) 0%, 
-        rgba(255,255,255,0) 40%, 
-        rgba(255,255,255,0.2) 50%, 
-        rgba(255,255,255,0) 60%, 
-        rgba(255,255,255,0) 100%
-    );
-    animation: shimmer 3s infinite linear;
+    position: relative;
+    overflow: hidden;
 }
-.btn-shimmer:hover {
-    animation: shimmer 1.5s infinite linear;
+.btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2.5s infinite;
 }
 
 /* Floating Labels */
