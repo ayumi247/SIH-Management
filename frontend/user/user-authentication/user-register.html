@@ -21,69 +21,102 @@
     <div class="auth-container">
         <div class="glass-card auth-card animate-fade-in">
             <h2 class="text-center gradient-text mb-2">Student Registration</h2>
+            <div class="wizard-progress">
+                <div class="wizard-dot active" id="dot1"></div>
+                <div class="wizard-dot" id="dot2"></div>
+                <div class="wizard-dot" id="dot3"></div>
+            </div>
+            
             <form id="registerForm">
-                <div class="grid">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="name" class="form-control" required>
+                <!-- Step 1: Account Details -->
+                <div class="wizard-step active" id="step1">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--neon-cyan);">Step 1: Account Details</h3>
+                    <div class="grid">
+                        <div class="form-group form-floating">
+                            <input type="text" id="name" class="form-control" placeholder=" " required>
+                            <label>Full Name</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="email" id="email" class="form-control" placeholder=" " required>
+                            <label>Email</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="password" id="password" class="form-control" placeholder=" " required>
+                            <label>Password</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="tel" id="phone" class="form-control" placeholder=" " required>
+                            <label>Phone</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="password" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Phone</label>
-                        <input type="tel" id="phone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Enrollment No.</label>
-                        <input type="text" id="enrollment_no" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Year of Study</label>
-                        <select id="year" class="form-control" required>
-                            <option value="1">1st Year</option>
-                            <option value="2">2nd Year</option>
-                            <option value="3">3rd Year</option>
-                            <option value="4">4th Year</option>
+                    <button type="button" class="btn btn-primary btn-shimmer mt-1" style="width: 100%;" onclick="nextStep(1)">Next Step</button>
+                </div>
+
+                <!-- Step 2: Academic Details -->
+                <div class="wizard-step" id="step2">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--neon-cyan);">Step 2: Academic Details</h3>
+                    <div class="form-group form-floating">
+                        <select id="college_id" class="form-control" required>
+                            <option value="">Loading active colleges...</option>
                         </select>
+                        <label>College</label>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Branch</label>
-                        <input type="text" id="branch" class="form-control" required>
+                    <div class="grid">
+                        <div class="form-group form-floating">
+                            <input type="text" id="enrollment_no" class="form-control" placeholder=" " required>
+                            <label>Enrollment No.</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="text" id="branch" class="form-control" placeholder=" " required>
+                            <label>Branch</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <select id="year" class="form-control" required>
+                                <option value="" disabled selected></option>
+                                <option value="1">1st Year</option>
+                                <option value="2">2nd Year</option>
+                                <option value="3">3rd Year</option>
+                                <option value="4">4th Year</option>
+                            </select>
+                            <label>Year of Study</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <select id="gender" class="form-control" required>
+                                <option value="" disabled selected></option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label>Gender</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Gender</label>
-                        <select id="gender" class="form-control" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group" style="grid-column: 1 / -1;">
-                        <label class="form-label">Skills (e.g., React, Python, UI/UX)</label>
-                        <input type="text" id="skills" class="form-control" placeholder="Optional: List your primary skills">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">GitHub URL</label>
-                        <input type="url" id="github_url" class="form-control" placeholder="Optional: https://github.com/yourusername">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">LinkedIn URL</label>
-                        <input type="url" id="linkedin_url" class="form-control" placeholder="Optional: https://linkedin.com/in/yourusername">
+                    <div style="display: flex; gap: 1rem;" class="mt-1">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="prevStep(2)">Back</button>
+                        <button type="button" class="btn btn-primary btn-shimmer" style="flex: 1;" onclick="nextStep(2)">Next Step</button>
                     </div>
                 </div>
-                <div class="form-group mt-1">
-                    <label class="form-label">College</label>
-                    <select id="college_id" class="form-control" required>
-                        <option value="">Loading active colleges...</option>
-                    </select>
+
+                <!-- Step 3: Skills & Profiles -->
+                <div class="wizard-step" id="step3">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--neon-cyan);">Step 3: Skills & Profiles</h3>
+                    <div class="form-group form-floating">
+                        <input type="text" id="skills" class="form-control" placeholder=" ">
+                        <label>Skills (e.g., React, Python, UI/UX)</label>
+                    </div>
+                    <div class="form-group form-floating">
+                        <input type="url" id="github_url" class="form-control" placeholder=" ">
+                        <label>GitHub URL</label>
+                    </div>
+                    <div class="form-group form-floating">
+                        <input type="url" id="linkedin_url" class="form-control" placeholder=" ">
+                        <label>LinkedIn URL</label>
+                    </div>
+                    
+                    <div style="display: flex; gap: 1rem;" class="mt-1">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="prevStep(3)">Back</button>
+                        <button type="submit" class="btn btn-primary btn-shimmer" style="flex: 1;">Complete Registration</button>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary mt-1" style="width: 100%;">Register</button>
             </form>
             <p class="text-center mt-1" style="color: var(--text-secondary); font-size: 0.9rem;">
                 Already have an account? <a href="user-login.html">Login here</a>
@@ -93,6 +126,34 @@
 
     <script src="../../js/api.js"></script>
     <script>
+        let currentStep = 1;
+        
+        function validateStep(step) {
+            const stepDiv = document.getElementById(`step${step}`);
+            const inputs = stepDiv.querySelectorAll('input[required], select[required]');
+            for(let input of inputs) {
+                if(!input.value) {
+                    input.reportValidity();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function nextStep(step) {
+            if(validateStep(step)) {
+                document.getElementById(`step${step}`).classList.remove('active');
+                document.getElementById(`step${step+1}`).classList.add('active');
+                document.getElementById(`dot${step+1}`).classList.add('active');
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.remove('active');
+            document.getElementById(`step${step-1}`).classList.add('active');
+            document.getElementById(`dot${step}`).classList.remove('active');
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 // College dropdown populated ONLY by active colleges (SuperAdmin approved)

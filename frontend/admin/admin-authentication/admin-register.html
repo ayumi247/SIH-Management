@@ -34,58 +34,76 @@
                 Only a single Administrator is permitted per institution. Upon submission, your application will undergo a verification process. Please allow up to 24 hours for your account to be reviewed and approved by our Team.
             </div>
 
+            <div class="wizard-progress">
+                <div class="wizard-dot active" id="dot1"></div>
+                <div class="wizard-dot" id="dot2"></div>
+            </div>
+            
             <form id="registerForm">
-                <div class="grid">
-                    <div class="form-group">
-                        <label class="form-label">Full Name</label>
-                        <input type="text" id="name" class="form-control" required>
+                <!-- Step 1: Account Details -->
+                <div class="wizard-step active" id="step1">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--neon-purple);">Step 1: Account Details</h3>
+                    <div class="grid">
+                        <div class="form-group form-floating">
+                            <input type="text" id="name" class="form-control" placeholder=" " required>
+                            <label>Full Name</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="email" id="email" class="form-control" placeholder=" " required>
+                            <label>Email</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="password" id="password" class="form-control" placeholder=" " required>
+                            <label>Password</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="tel" id="phone" class="form-control" placeholder=" " required>
+                            <label>Phone</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Email</label>
-                        <input type="email" id="email" class="form-control" required>
+                    <button type="button" class="btn btn-admin btn-shimmer mt-1" style="width: 100%;" onclick="nextStep(1)">Next Step</button>
+                </div>
+
+                <!-- Step 2: Professional Details -->
+                <div class="wizard-step" id="step2">
+                    <h3 style="margin-bottom: 1.5rem; color: var(--neon-purple);">Step 2: Professional Details</h3>
+                    <div class="grid">
+                        <div class="form-group form-floating">
+                            <input type="text" id="enrollment_no" class="form-control" placeholder=" " required>
+                            <label>Employee/Enrollment No.</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="text" id="position" class="form-control" placeholder=" " required>
+                            <label>Position/Designation</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="text" id="year" class="form-control" value="N/A" placeholder=" " required>
+                            <label>Year</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="text" id="branch" class="form-control" placeholder=" " required>
+                            <label>Branch/Department</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <select id="gender" class="form-control" required>
+                                <option value="" disabled selected></option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <label>Gender</label>
+                        </div>
+                        <div class="form-group form-floating">
+                            <input type="text" id="college_name" class="form-control" placeholder=" " required>
+                            <label>College Name</label>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="password" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Phone</label>
-                        <input type="tel" id="phone" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Employee/Enrollment No.</label>
-                        <input type="text" id="enrollment_no" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Position/Designation</label>
-                        <input type="text" id="position" class="form-control" required placeholder="e.g. Professor">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Year</label>
-                        <input type="text" id="year" class="form-control" value="N/A" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Branch/Department</label>
-                        <input type="text" id="branch" class="form-control" required>
+                    
+                    <div style="display: flex; gap: 1rem;" class="mt-1">
+                        <button type="button" class="btn btn-secondary" style="flex: 1;" onclick="prevStep(2)">Back</button>
+                        <button type="submit" class="btn btn-admin btn-shimmer" style="flex: 1;">Submit Application</button>
                     </div>
                 </div>
-                
-                <div class="grid mt-1">
-                    <div class="form-group">
-                        <label class="form-label">Gender</label>
-                        <select id="gender" class="form-control" required>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">College Name</label>
-                        <input type="text" id="college_name" class="form-control" required placeholder="e.g. Delhi Technological University">
-                    </div>
-                </div>
-                
-                <button type="submit" class="btn btn-admin mt-1" style="width: 100%;">Submit Application</button>
             </form>
             <p class="text-center mt-1" style="color: var(--text-secondary); font-size: 0.9rem;">
                 Already verified? <a href="admin-login.html" style="color: var(--neon-purple);">Login here</a>
@@ -95,6 +113,33 @@
 
     <script src="../../js/api.js"></script>
     <script>
+        let currentStep = 1;
+        
+        function validateStep(step) {
+            const stepDiv = document.getElementById(`step${step}`);
+            const inputs = stepDiv.querySelectorAll('input[required], select[required]');
+            for(let input of inputs) {
+                if(!input.value) {
+                    input.reportValidity();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function nextStep(step) {
+            if(validateStep(step)) {
+                document.getElementById(`step${step}`).classList.remove('active');
+                document.getElementById(`step${step+1}`).classList.add('active');
+                document.getElementById(`dot${step+1}`).classList.add('active');
+            }
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step${step}`).classList.remove('active');
+            document.getElementById(`step${step-1}`).classList.add('active');
+            document.getElementById(`dot${step}`).classList.remove('active');
+        }
 
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();

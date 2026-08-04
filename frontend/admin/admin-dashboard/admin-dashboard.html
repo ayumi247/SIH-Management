@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/animations.css">
     <link rel="stylesheet" href="../../css/dashboard-layout.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div id="sidebar-container"></div>
@@ -35,6 +36,12 @@
         <p id="waitlisted-teams" style="font-size: 2.5rem; font-weight: 600; margin-top: 0.5rem;">0 <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 5</span></p>
     </div>
 </div>
+<div class="glass-card" style="margin-top: 1.5rem; display: flex; flex-direction: column; align-items: center;">
+    <h4 style="margin-bottom: 1rem;">Team Status Distribution</h4>
+    <div style="height: 300px; width: 100%; max-width: 500px;">
+        <canvas id="teamStatusChart"></canvas>
+    </div>
+</div>
 <script>
     async function initPage(user) {
         document.getElementById('welcome-msg').innerText = `Welcome, ${user.name}!`;
@@ -52,6 +59,41 @@
             document.getElementById('total-teams').innerText = teams.length;
             document.getElementById('shortlisted-teams').innerHTML = `${shortlisted} <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 45</span>`;
             document.getElementById('waitlisted-teams').innerHTML = `${waitlisted} <span style="font-size: 1.2rem; color: var(--text-secondary);">/ 5</span>`;
+            
+            const pending = teams.length - shortlisted - waitlisted;
+            
+            const ctx = document.getElementById('teamStatusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pending', 'Shortlisted', 'Waitlisted'],
+                    datasets: [{
+                        data: [pending, shortlisted, waitlisted],
+                        backgroundColor: [
+                            'rgba(0, 240, 255, 0.8)', // Cyan (Pending)
+                            'rgba(19, 136, 8, 0.8)',  // Emerald (Shortlisted)
+                            'rgba(255, 153, 51, 0.8)' // Saffron (Waitlisted)
+                        ],
+                        borderColor: 'rgba(24, 24, 27, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: '#a1a1aa',
+                                font: {
+                                    family: "'Inter', sans-serif"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         } catch (e) {
             console.error(e);
         }
