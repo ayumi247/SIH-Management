@@ -16,3 +16,200 @@
 .animate-float {
     animation: float 4s ease-in-out infinite;
 }
+
+/* ==========================================================================
+   Task 1: User & Admin Dashboards
+   ========================================================================== */
+
+/* Skeleton Loader */
+.skeleton-loader-card {
+  position: relative;
+  background-color: #1a1a2e; /* Dark base color */
+  border-radius: 8px;
+  padding: 20px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+.skeleton-header, .skeleton-body {
+  background-color: #2a2a40;
+  border-radius: 4px;
+}
+
+.skeleton-header { height: 24px; width: 60%; }
+.skeleton-body { height: 16px; width: 100%; }
+.skeleton-body.short { width: 80%; }
+
+.skeleton-loader-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: shimmer-sweep 1.5s infinite linear;
+}
+
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Glass Panel Slide-in */
+.glass-panel-slide-in {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 350px;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 1000;
+  padding: 24px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.glass-panel-slide-in.is-open {
+  transform: translateX(0);
+}
+
+.close-panel {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0;
+  margin-bottom: 20px;
+  transition: color 0.2s ease;
+}
+
+.close-panel:hover {
+  color: #fff;
+}
+
+/* ==========================================================================
+   Task 2: Authentication Forms
+   ========================================================================== */
+
+/* Input Border Expand */
+.input-border-expand {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 20px;
+}
+
+.input-border-expand input {
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 4px;
+  outline: none;
+  width: 250px;
+  transition: border-color 0.3s ease;
+}
+
+.input-border-expand input:focus {
+  border-bottom-color: transparent;
+}
+
+.input-border-expand::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #00f0ff;
+  transform: scaleX(0);
+  transform-origin: center bottom;
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 0 0 4px 4px;
+}
+
+.input-border-expand:focus-within::after {
+  transform: scaleX(1);
+}
+
+/* Error Shake State */
+.input-error-shake input {
+  border-color: #ff3366;
+}
+
+.input-error-shake::after {
+  background-color: #ff3366;
+}
+
+.input-error-shake {
+  animation: hardware-fault-shake 0.2s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes hardware-fault-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-4px); }
+  40%, 80% { transform: translateX(4px); }
+}
+
+/* ==========================================================================
+   Task 3: Global Loading State
+   ========================================================================== */
+
+.telemetry-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.telemetry-overlay.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.telemetry-overlay svg {
+  width: 200px;
+  height: 40px;
+}
+
+.oscilloscope-line {
+  fill: none;
+  stroke: #00ff66;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: oscilloscope-sweep 1.5s infinite linear;
+}
+
+@keyframes oscilloscope-sweep {
+  0% { stroke-dashoffset: 100; }
+  50% { stroke-dashoffset: 0; }
+  100% { stroke-dashoffset: -100; }
+}

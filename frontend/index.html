@@ -308,6 +308,12 @@
     </style>
 </head>
 <body>
+    <!-- Global Loading State (Telemetry Overlay) -->
+    <div class="telemetry-overlay" id="global-loader">
+        <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+            <path d="M0,10 L40,10 L45,2 L55,18 L60,10 L100,10" class="oscilloscope-line"></path>
+        </svg>
+    </div>
 
     <!-- Header -->
     <header class="header">
@@ -416,5 +422,32 @@
         </div>
     </section>
 
+    <!-- Components Demo Section (hidden by default or placed here for reference) -->
+    <section style="display: none;" id="demo-components">
+        <!-- Task 1: User & Admin Dashboards -->
+        <!-- Skeleton Loader Card -->
+        <article class="skeleton-loader-card">
+            <div class="skeleton-header"></div>
+            <div class="skeleton-body"></div>
+            <div class="skeleton-body short"></div>
+        </article>
+
+        <!-- Glass Panel Slide-in -->
+        <button onclick="document.getElementById('details-panel').classList.add('is-open')">Open Panel</button>
+        <aside id="details-panel" class="glass-panel-slide-in">
+            <button class="close-panel" onclick="document.getElementById('details-panel').classList.remove('is-open')">&times; Close</button>
+            <h2>Team Details</h2>
+            <p>Panel content goes here...</p>
+        </aside>
+
+        <!-- Task 2: Authentication Forms -->
+        <!-- High-Tech Input Field -->
+        <div class="input-border-expand">
+            <input type="text" placeholder="Enter Team Name" />
+        </div>
+        <button onclick="triggerError(this)">Trigger Error</button>
+    </section>
+
+    <script src="js/ui.js"></script>
 </body>
 </html>
