@@ -56,11 +56,28 @@
             color: #a1a1aa;
             text-decoration: none;
             font-size: 0.95rem;
-            transition: color 0.2s;
+            transition: color 0.3s ease;
+            position: relative;
         }
         
+        .login-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background-color: #00BFFF;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
         .login-link:hover {
             color: #fff;
+        }
+        
+        .login-link:hover::after {
+            width: 100%;
         }
         
         .btn-get-started {
@@ -73,11 +90,29 @@
             font-size: 0.95rem;
             cursor: pointer;
             text-decoration: none;
-            transition: opacity 0.2s;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
         }
         
+        .btn-get-started svg {
+            max-width: 0;
+            opacity: 0;
+            transform: translateX(-10px) scale(0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 0;
+        }
+
         .btn-get-started:hover {
             opacity: 0.9;
+            color: #000;
+        }
+        
+        .btn-get-started:hover svg {
+            max-width: 20px;
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            margin-left: 5px;
         }
 
         .hero-section {
@@ -174,13 +209,29 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            justify-content: center;
             text-decoration: none;
             transition: background-color 0.2s;
+        }
+        
+        .btn-primary-action svg {
+            max-width: 0;
+            opacity: 0;
+            transform: translateX(-10px) scale(0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-left: 0;
         }
 
         .btn-primary-action:hover {
             background-color: #00a8e6;
+            color: #000;
+        }
+        
+        .btn-primary-action:hover svg {
+            max-width: 20px;
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            margin-left: 5px;
         }
 
         .btn-secondary-action {
@@ -193,12 +244,33 @@
             font-size: 1rem;
             cursor: pointer;
             text-decoration: none;
-            transition: background-color 0.2s, border-color 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-secondary-action::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-25deg);
+            transition: all 0.5s ease;
         }
 
         .btn-secondary-action:hover {
             background-color: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 191, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.2);
+            color: #fff;
+        }
+        
+        .btn-secondary-action:hover::after {
+            left: 125%;
         }
 
         /* Admin portal link subtly placed */
@@ -254,41 +326,30 @@
             border-radius: 12px;
             padding: 2.5rem 2rem;
             transition: border-color 0.3s, transform 0.3s;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
         }
 
         .step-card:hover {
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: translateY(-4px);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         .step-icon {
-            width: 48px;
-            height: 48px;
-            background-color: #18181b;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             color: #fff;
             margin-bottom: 1.5rem;
+            opacity: 0.8;
         }
 
         .step-card h3 {
             font-size: 1.25rem;
-            font-weight: 600;
-            color: #fff;
+            font-weight: 700;
             margin-bottom: 1rem;
+            color: #fff;
         }
 
         .step-card p {
-            color: #888;
+            color: #a1a1aa;
             font-size: 0.95rem;
             line-height: 1.6;
-            margin: 0;
         }
         
         @media (max-width: 768px) {
@@ -324,7 +385,13 @@
         </a>
         <div class="nav-links">
             <a href="user/user-authentication/user-login.html" class="login-link">Student Login</a>
-            <a href="admin/admin-authentication/admin-login.html" class="btn-get-started">Admin Login</a>
+            <a href="admin/admin-authentication/admin-login.html" class="btn-get-started">
+                <span>Admin Login</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </a>
         </div>
     </header>
 
@@ -335,8 +402,8 @@
         </div>
         
         <h1 class="hero-title">
-            FIND YOUR <br>
-            <span class="highlight">TEAM.</span>
+            STREAMLINE YOUR <br>
+            <span class="highlight">SIH JOURNEY.</span>
         </h1>
         
         <p class="hero-subtitle">
@@ -345,14 +412,14 @@
         
         <div class="hero-actions">
             <a href="admin/admin-authentication/admin-register.html" class="btn-primary-action">
-                Admin Registration 
+                <span>Admin Registration</span>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
             </a>
             <a href="user/user-authentication/user-register.html" class="btn-secondary-action">
-                Student Registration
+                <span>Student Registration</span>
             </a>
         </div>
 
@@ -416,5 +483,55 @@
         </div>
     </section>
 
+    <!-- Tech Spark Footer -->
+    <footer class="tech-spark-footer">
+        <div class="footer-container">
+            
+            <!-- Brand Column -->
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <img src="assets/techspark-logo.png" alt="Tech Spark Logo">
+                </div>
+                <h3 class="footer-title">Tech Spark</h3>
+                <p class="footer-quote">Where Ideas Catch fire</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="user/user-authentication/user-register.html">Student Registration</a></li>
+                    <li><a href="admin/admin-authentication/admin-register.html">Admin Registration</a></li>
+                    <li><a href="user/user-authentication/user-login.html">Student Login</a></li>
+                    <li><a href="admin/admin-authentication/admin-login.html">Admin Login</a></li>
+                </ul>
+            </div>
+
+            <!-- Connect With Us -->
+            <div class="footer-connect">
+                <h4>Connect With Us</h4>
+                <a href="mailto:techsparkdseu@gmail.com" class="contact-email">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    techsparkdseu@gmail.com
+                </a>
+                <div class="social-icons">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/techsparkdseu" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                    </a>
+                    <!-- LinkedIn -->
+                    <a href="https://www.linkedin.com/company/tech-spark-dseu-okhla-ii/posts/?feedView=all" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2026 Tech Spark. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
