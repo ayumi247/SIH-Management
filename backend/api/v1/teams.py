@@ -5,7 +5,7 @@ from api.deps import get_current_student
 from core.exceptions import NotFoundException
 from db.models import Team, TeamStatus, User
 from db.session import get_session
-from schemas.team import TeamCreate, TeamResponse, TeamWithMembersResponse
+from schemas.team import TeamCreate, TeamResponse, TeamUpdate, TeamWithMembersResponse
 from services.team_service import create_team
 
 router = APIRouter()
@@ -18,6 +18,29 @@ def create_new_team(
     current_user: User = Depends(get_current_student),
 ):
     return create_team(db, team_in, current_user)
+
+
+@router.patch("/my-team", response_model=TeamResponse)
+def update_my_team(
+    team_update: TeamUpdate,
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_student),
+):
+    if not current_user.team_id:
+        raise NotFoundException(detail="You are not in a team")
+
+    team = db.get(Team, current_user.team_id)
+    if not team:
+        raise NotFoundException(detail="Team not found")
+
+    update_data = team_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(team, key, value)
+
+    db.add(team)
+    db.commit()
+    db.refresh(team)
+    return team
 
 
 @router.get("/my-team", response_model=TeamWithMembersResponse)

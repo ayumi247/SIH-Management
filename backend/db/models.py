@@ -36,7 +36,7 @@ class College(SQLModel, table=True):
 class Team(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     name: str = Field(index=True)
-    problem_statement_id: str
+    problem_statement_id: str | None = None
     required_skills: str
     status: TeamStatus = Field(default=TeamStatus.Pending)
     college_id: uuid.UUID = Field(foreign_key="college.id")

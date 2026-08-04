@@ -25,7 +25,7 @@
         </div>
         <div class="form-group">
             <label class="form-label">Problem Statement</label>
-            <input type="text" id="problem_statement" class="form-control" required placeholder="e.g. SIH1234">
+            <input type="text" id="problem_statement" class="form-control" placeholder="e.g. SIH1234 (Optional)">
         </div>
         <div class="form-group">
             <label class="form-label">Required Skills (Comma separated)</label>
@@ -49,7 +49,7 @@
             try {
                 await fetchAPI('/teams', {
                     method: 'POST',
-                    body: JSON.stringify({ name: name, problem_statement_id: ps, required_skills: skills })
+                    body: JSON.stringify({ name: name, problem_statement_id: ps || null, required_skills: skills })
                 });
                 alert('Team created successfully! You are now the team leader.');
                 window.location.href = 'user-my-team.html';

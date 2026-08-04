@@ -8,14 +8,20 @@ from schemas.user import UserResponse
 
 class TeamCreate(BaseModel):
     name: str
-    problem_statement_id: str
+    problem_statement_id: str | None = None
     required_skills: str
+
+
+class TeamUpdate(BaseModel):
+    name: str | None = None
+    problem_statement_id: str | None = None
+    required_skills: str | None = None
 
 
 class TeamResponse(BaseModel):
     id: uuid.UUID
     name: str
-    problem_statement_id: str
+    problem_statement_id: str | None = None
     required_skills: str
     status: TeamStatus
     college_id: uuid.UUID
