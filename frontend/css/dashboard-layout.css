@@ -21,3 +21,76 @@ body { margin: 0; padding: 0; display: flex; height: 100vh; overflow: hidden; fl
 
 .sidebar.super-admin-sidebar .sidebar-logo { color: var(--neon-pink); }
 .sidebar.super-admin-sidebar .sidebar-link.active { border-left: 4px solid var(--neon-pink); }
+
+/* --- Mobile Responsiveness --- */
+
+/* Sidebar overlay for clicking outside to close */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Hide hamburger on desktop */
+.mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-right: auto; /* Push other items to the right */
+}
+
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: block;
+    }
+
+    /* Hide sidebar by default, make it a fixed overlay */
+    #sidebar-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    #sidebar-container.sidebar-open {
+        transform: translateX(0);
+    }
+
+    /* Navbar styling on mobile */
+    .navbar {
+        justify-content: flex-end;
+        padding: 0 1rem;
+    }
+    
+    /* Main content spacing */
+    .main-content {
+        padding: 1.5rem 1rem;
+    }
+
+    /* Ensure tables can scroll horizontally */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

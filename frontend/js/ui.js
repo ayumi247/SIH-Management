@@ -23,3 +23,26 @@ function showToast(message, type = 'success') {
     // Simple toast notification implementation (can be expanded later)
     alert(message); 
 }
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar-container');
+    if (!sidebar) return;
+    
+    // Create overlay if it doesn't exist
+    let overlay = document.getElementById('sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'sidebar-overlay';
+        overlay.className = 'sidebar-overlay';
+        overlay.onclick = toggleSidebar;
+        document.body.appendChild(overlay);
+    }
+    
+    if (sidebar.classList.contains('sidebar-open')) {
+        sidebar.classList.remove('sidebar-open');
+        overlay.classList.remove('active');
+    } else {
+        sidebar.classList.add('sidebar-open');
+        overlay.classList.add('active');
+    }
+}
