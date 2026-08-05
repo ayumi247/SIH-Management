@@ -43,7 +43,12 @@ class Team(SQLModel, table=True):
     leader_id: uuid.UUID | None = Field(default=None, foreign_key="user.id")
 
     college: College = Relationship(back_populates="teams")
-    members: list["User"] = Relationship(back_populates="team")
+    members: list["User"] = Relationship(
+        back_populates="team",
+        sa_relationship_kwargs={
+            "foreign_keys": "[User.team_id]",
+        },
+    )
     join_requests: list["JoinRequest"] = Relationship(back_populates="target_team")
 
 
@@ -67,7 +72,12 @@ class User(SQLModel, table=True):
     team_id: uuid.UUID | None = Field(default=None, foreign_key="team.id")
 
     college: College = Relationship(back_populates="users")
-    team: Team | None = Relationship(back_populates="members")
+    team: Team | None = Relationship(
+        back_populates="members",
+        sa_relationship_kwargs={
+            "foreign_keys": "[User.team_id]",
+        },
+    )
     led_teams: list[Team] = Relationship(
         sa_relationship_kwargs={
             "primaryjoin": "User.id == Team.leader_id",
