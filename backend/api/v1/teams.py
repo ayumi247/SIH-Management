@@ -84,7 +84,10 @@ def leave_team(
 
     if team.leader_id == current_user.id:
         from core.exceptions import BadRequestException
-        raise BadRequestException(detail="Team leaders cannot leave the team, they can only delete it")
+
+        raise BadRequestException(
+            detail="Team leaders cannot leave the team, they can only delete it"
+        )
 
     current_user.team_id = None
     db.add(current_user)
@@ -106,6 +109,7 @@ def delete_my_team(
 
     if team.leader_id != current_user.id:
         from core.exceptions import BadRequestException
+
         raise BadRequestException(detail="Only the team leader can delete the team")
 
     # Kick all members
@@ -116,5 +120,5 @@ def delete_my_team(
     # Delete the team
     db.delete(team)
     db.commit()
-    
+
     return {"message": "Team deleted successfully"}
