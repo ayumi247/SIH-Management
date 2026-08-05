@@ -373,17 +373,37 @@
         }
         
         @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 1.25rem;
+                padding: 1.5rem 1rem;
+            }
+            .hero-section {
+                margin: 3rem auto;
+                padding: 0 1.5rem;
+            }
             .hero-title {
-                font-size: 4rem;
+                font-size: 2.75rem;
+            }
+            .hero-subtitle {
+                font-size: 1rem;
             }
             .hero-actions {
                 flex-direction: column;
                 width: 100%;
                 align-items: stretch;
+                gap: 1rem;
             }
             .btn-primary-action, .btn-secondary-action {
                 text-align: center;
                 justify-content: center;
+                width: 100%;
+            }
+            .info-header h2 {
+                font-size: 2rem;
+            }
+            .info-section {
+                padding: 0 1.5rem;
             }
         }
     </style>
