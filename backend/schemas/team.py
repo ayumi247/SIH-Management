@@ -25,6 +25,7 @@ class TeamResponse(BaseModel):
     required_skills: str
     status: TeamStatus
     college_id: uuid.UUID
+    leader_id: uuid.UUID | None = None
 
     model_config = ConfigDict(from_attributes=True)
 

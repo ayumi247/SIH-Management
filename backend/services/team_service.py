@@ -24,6 +24,7 @@ def create_team(db: Session, team_in: TeamCreate, user: User) -> Team:
         problem_statement_id=team_in.problem_statement_id,
         required_skills=team_in.required_skills,
         college_id=user.college_id,
+        leader_id=user.id,
     )
     db.add(new_team)
     db.commit()

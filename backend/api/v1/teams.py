@@ -68,3 +68,53 @@ def get_available_teams(
     ).all()
     # Filter those with < 6 members in memory
     return [t for t in teams if len(t.members) < 6]
+
+
+@router.post("/leave")
+def leave_team(
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_student),
+):
+    if not current_user.team_id:
+        raise NotFoundException(detail="You are not in a team")
+
+    team = db.get(Team, current_user.team_id)
+    if not team:
+        raise NotFoundException(detail="Team not found")
+
+    if team.leader_id == current_user.id:
+        from core.exceptions import BadRequestException
+        raise BadRequestException(detail="Team leaders cannot leave the team, they can only delete it")
+
+    current_user.team_id = None
+    db.add(current_user)
+    db.commit()
+    return {"message": "Successfully left the team"}
+
+
+@router.delete("/my-team")
+def delete_my_team(
+    db: Session = Depends(get_session),
+    current_user: User = Depends(get_current_student),
+):
+    if not current_user.team_id:
+        raise NotFoundException(detail="You are not in a team")
+
+    team = db.get(Team, current_user.team_id)
+    if not team:
+        raise NotFoundException(detail="Team not found")
+
+    if team.leader_id != current_user.id:
+        from core.exceptions import BadRequestException
+        raise BadRequestException(detail="Only the team leader can delete the team")
+
+    # Kick all members
+    for member in team.members:
+        member.team_id = None
+        db.add(member)
+
+    # Delete the team
+    db.delete(team)
+    db.commit()
+    
+    return {"message": "Team deleted successfully"}

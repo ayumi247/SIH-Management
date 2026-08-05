@@ -40,6 +40,7 @@ class Team(SQLModel, table=True):
     required_skills: str
     status: TeamStatus = Field(default=TeamStatus.Pending)
     college_id: uuid.UUID = Field(foreign_key="college.id")
+    leader_id: uuid.UUID | None = Field(default=None, foreign_key="user.id")
 
     college: College = Relationship(back_populates="teams")
     members: list["User"] = Relationship(back_populates="team")
@@ -67,6 +68,12 @@ class User(SQLModel, table=True):
 
     college: College = Relationship(back_populates="users")
     team: Team | None = Relationship(back_populates="members")
+    led_teams: list[Team] = Relationship(
+        sa_relationship_kwargs={
+            "primaryjoin": "User.id == Team.leader_id",
+            "foreign_keys": "[Team.leader_id]",
+        }
+    )
 
     sent_requests: list["JoinRequest"] = Relationship(
         back_populates="sender",
