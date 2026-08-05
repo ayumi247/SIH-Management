@@ -1,0 +1,2 @@
+# Ignore Instagram links because they frequently block link checkers (429 Too Many Requests)
+https?://(www\.)?instagram\.com/.*
