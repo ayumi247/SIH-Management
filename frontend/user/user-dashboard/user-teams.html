@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Join Requests | SIH Matchmaker</title>
+    <link rel="icon" type="image/svg+xml" href="../../assets/favicon.svg">
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/components.css">
     <link rel="stylesheet" href="../../css/animations.css">
@@ -48,14 +49,23 @@
             
             let html = '';
             for(let inv of invites) {
-                let title = inv.target_team_id ? 'Team Invite' : 'Student Requesting to Join';
+                let title, subtitle;
+                if (inv.target_team_id) {
+                    // A student is requesting to join the team
+                    title = `Request from ${inv.sender_name || 'Student'}`;
+                    subtitle = `To join team: ${inv.target_team_name || inv.target_team_id}`;
+                } else {
+                    // A team is inviting the student
+                    title = `Invite from Team: ${inv.sender_team_name || 'Unknown'}`;
+                    subtitle = `Sent by: ${inv.sender_name || inv.sender_id}`;
+                }
                 
                 if (inv.status === 'Pending') {
                     html += `
                         <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <h4>${title}</h4>
-                                <p style="font-size: 0.9rem; color: var(--text-secondary);">From User ID: ${inv.sender_id}</p>
+                                <p style="font-size: 0.9rem; color: var(--text-secondary);">${subtitle}</p>
                             </div>
                             <div style="display: flex; gap: 0.5rem;">
                                 <button class="btn btn-primary" onclick="handleInvite('${inv.id}', 'accept')" style="padding: 0.5rem 1rem;">Accept</button>
@@ -84,7 +94,13 @@
             
             let html = '';
             for(let inv of invites) {
-                let targetInfo = inv.target_team_id ? `Team ID: ${inv.target_team_id}` : `User ID: ${inv.target_user_id}`;
+                let targetInfo;
+                if (inv.target_team_id) {
+                    targetInfo = `Team: ${inv.target_team_name || inv.target_team_id}`;
+                } else {
+                    targetInfo = `Student: ${inv.target_user_name || inv.target_user_id}`;
+                }
+                
                 html += `
                     <div class="glass-card" style="display: flex; justify-content: space-between; align-items: center;">
                         <div>

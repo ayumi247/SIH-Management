@@ -17,4 +17,9 @@ class InviteResponse(BaseModel):
     target_user_id: uuid.UUID | None
     status: InviteStatus
 
+    sender_name: str | None = None
+    target_team_name: str | None = None
+    sender_team_name: str | None = None
+    target_user_name: str | None = None
+
     model_config = ConfigDict(from_attributes=True)

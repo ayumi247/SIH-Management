@@ -122,3 +122,19 @@ class JoinRequest(SQLModel, table=True):
         back_populates="received_requests",
         sa_relationship_kwargs={"foreign_keys": "[JoinRequest.target_user_id]"},
     )
+
+    @property
+    def sender_name(self) -> str | None:
+        return self.sender.name if self.sender else None
+
+    @property
+    def target_team_name(self) -> str | None:
+        return self.target_team.name if self.target_team else None
+
+    @property
+    def sender_team_name(self) -> str | None:
+        return self.sender.team.name if (self.sender and self.sender.team) else None
+
+    @property
+    def target_user_name(self) -> str | None:
+        return self.target_user.name if self.target_user else None
